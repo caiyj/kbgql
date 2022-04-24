@@ -6,8 +6,8 @@
 [Script]
 cron "0 0/30 * * *" script-path=kbg_send_test.js, tag=信息推送测试
 */
-const taskname = "信息推送测试";
 const $ = new Env("信息推送测试");
+const jsname = "信息推送测试";
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = require('./sendNotify');
 let cookiesArr = [], cookie = '';
@@ -24,7 +24,7 @@ if ($.isNode()) {
 !(async () => {
     if (!cookiesArr[0]) {
         if($.isNode()){
-            notifyBody = taskname + "运行通知\n\n" + "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取"
+            notifyBody = jsname + "运行通知\n\n" + "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取"
             notify.sendNotify($.name, notifyBody, {}, '\n\n本通知 By：kongbg' );
         } else {
             $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
@@ -62,7 +62,7 @@ async function main() {
 //通知
 async function showmsg() {
     if(!notifyStr) return;
-    notifyBody = taskname + "运行通知\n\n" + notifyStr
+    notifyBody = jsname + "运行通知\n\n" + notifyStr
     if (notifyFlag > 0) {
         if($.isNode()){
             await notify.sendNotify($.name, notifyBody, {}, '\n\n本通知 By：kongbg' );
