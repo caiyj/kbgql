@@ -1,0 +1,13 @@
+{
+    "tokens":[
+        {
+            "names":[],
+            "token":""
+        }
+    ],
+    "pushAllByTitle": ["京喜工厂商品列表详情","京东白嫖榜"],
+    "disableByTitle": ["京东到家果园信息"],
+    "psuhOwner":["CK顺序调试工具"],
+    "disableStartTime":"01:32:00",
+    "disableEndTime":"08:00:00"
+}
