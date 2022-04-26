@@ -82,7 +82,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             if(!result.result.taskList) return;
             //status: 0 - 未完成，1 - 已完成，2 - 已领取
@@ -92,7 +92,7 @@ class UserInfo {
                     doneStr = ` ${task.taskDoneCount}/${task.taskTotalCount}`
                 }
                 let statusStr = (task.status==0) ? '未完成' : ((task.status==1) ? '已完成' : '已领取')
-                console.log(`账号[${this.index}]任务[${sceneId}-${task.itemId}]:${doneStr} +${task.rewardDisplayValue} ${statusStr}`)
+                console.log(`账号[${this.index}]任务[${sceneId}-${task.itemId}](${task.itemName}):${doneStr} +${task.rewardDisplayValue} ${statusStr}`)
                 if(task.status == 0) {
                     this.task.push({sceneId:sceneId,taskId:task.itemId})
                 } else if(task.status == 1) {
@@ -113,7 +113,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]完成任务[${sceneId}-${taskId}]`)
         } else {
@@ -130,7 +130,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         // if(!result) return
-        // console.log(result)
+        console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
         } else {
