@@ -612,6 +612,70 @@ class UserInfo {
             console.log(`账号[${this.index}]查询现金签到失败: ${result.message}`)
         }
     }
+
+    // 我的家维修或打扫
+    async houseWorkList() {
+        let url = `https://lovely-house.58.com/housework/get`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            if (result.result.houseworkTaskVOList.length) {
+                console.log(`账号[${this.index}]家里有情况`);
+                for (let i =0 ; i < result.result.houseworkTaskVOList.length; i++) {
+                    await $.wait(500);
+                    await this.doHouseWorkTask(result.result.houseworkTaskVOList[i]);
+                }
+
+            } else {
+                console.log(`账号[${this.index}]家里一切安好`);
+            }
+        } else {
+            console.log(`账号[${this.index}]查询我的家运行情况失败: ${result.message}`)
+        }
+    }
+
+    // 我的家维修或打扫
+    async doHouseWorkTask(item) {
+        let furnitureId = item.furnitureId;
+        let url = `https://lovely-house.58.com/housework/clean`
+        let body = `furnitureId=${furnitureId}`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('post',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 0) {
+            console.log(`账号[${this.index}]${item.okMsg}\n`)
+            if (result.result?.nextTaskList?.houseworkTaskVOList.length) {
+                await $.wait(500);
+                await this.doHouseWorkTask(result.result.nextTaskList.houseworkTaskVOList[0]);
+            } else {
+                console.log(`账号[${this.index}]已全部清理干净\n`);
+            }
+        } else {
+            console.log(`账号[${this.index}]维修家电或打扫失败: ${result.message}`)
+        }
+    }
+
+    // 我的家收取金币
+    async collectCoin() {
+        let url = `https://lovely-house.58.com/fortunecat/collect`
+        let body = `_d=Z2UwMHx2a25aNzZabzpaZiA3OTgyWnMjImFabnQgMVoiW1ZuW3lPcXdQZXNoLGpaNzF7ZmJadVYwOHRUNDJmNFpfa2NqazNNO29wOE5CVlREYTlHYjhTPmJxInNaZGFjYiJ2IEUtQ0QiZDpnMnlsIiAiOTZuZSBuaTdiOWFaIm1pLG8gIGxaWiIeenVCRHVTQU9GUGtMWm4iNTQiYWtuWkk2MzlVYWZmNztWPE0xMUR5VEVnMFw4O1RqOTNrRVM+V083LG8iNjk6ZSx2WkE3RUBaZDo4YgpmHiAeNjQgeFogWjkwYjcicFpwWmd0IG0jInc6b2x7cHFSbmN1ZDZabmgeMTcqZSIgIkU1J2U7YDU4X0xGNDF2Tk1yRjdYek1SRWNxaWQyM24vcndvWmoeMzRmOlppJTdELjNvOmEzNyB5Olo6MDggYyIgImIzMmMsbSJrbloyWm4yLHIgRjdPN2d1Njd3ZVllIHM6NzkKYx4gHj03U3gyZDg0Jnlueld3VjI8Q1xpTGpGTlt3WDZrTl0pey47bnI6NTE0Y25kOCtGQS97ZDA2Oh5RHiMgNjVadDRaHjc3YmBaYR5tICJaIFovWmxaamJ7UW9sY2JvZTptIHUgNlogcjpaOjYzTzI5Zzs5TkZRWG0xTUl2TEhrLWJMcU4wSVFLa2FEajMzIHYgMDk2ZyBaQzBCOUQgOjNjNiNfJXZaNVoiWlojOjc1MTZucjpvIB4idyIsbmMgQjZPUlQ2RDY1eEdEWmJaOyIeUR4iIDc2QHczPGFiRUgxd1NMcXJ6ZjVkc01TQVY7Tmg7NCRWTWU1IGZaNmJhNiAiRzctQTcLYTZiPGJze2kiNyJuIiJqIDRiMzcgaSBlWjosYx4wIG5yVnB7bV9YU3FvNG5aIm0jOFoiXyVwWjk2cWVlZjdgT0YwcFRHVkppNVtWQ2RmbGFTNFh0TFdJfXdBWmkiMjc3Y1oeQjE7NTF9NGEzOGhiWmQ2Myx1HixuWmc6ODEgbVpaIyBadTovIFp0U3VBMlVicjc/ZTIidXAvNG9pc3txIzY0dCZkZDYwRXBkO0xJWHZucTNIWVN1ZzJbTS8yUUNFaGVaI2QuaTA1WiM6QzVGN1o=|X1FnRzV4bHF1TjtSjzA_OYSIb1xubV9VXlA6XkdOe3hMYz-FRFiBN15oPVhRam5Pj1Bwi3RihnZoe05pX0ZSVU94iE56cEY6TGtpTHVmSU99P3xzUzRcXnxxTHhZcjdxX4BPTURVTmVwND01YjZeW0tofn-Fek80cGk_aHlhajtQUkN8Zm1wN2llQTVMOlBtTlJDS0RIRjc-fj9hazh_OU9Mi2NDeU9uOlhnWVN1j38=|kmzFEO9PEnKAESxbTcyokAFZweGn3LhgXOXzNRzIaC2QKmMjStAuEVq5AUhyL6fu`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('post',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 0) {
+            console.log(`账号[${this.index}]收取${result.result}金币}\n`)
+        } else {
+            console.log(`账号[${this.index}]维修家电或打扫失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -713,6 +777,21 @@ class UserInfo {
             await user.houseWithdrawPage(); 
             await $.wait(200);
         }
+
+        console.log('\n================== 我的家维修或打扫 ==================')
+        // 我的家维修或打扫
+        for(let user of userList) {
+            await user.houseWorkList(); 
+            await $.wait(200);
+        }
+
+        console.log('\n================== 我的家收取金币 ==================')
+        
+        //收取金币 (独立单独脚本，20分钟跑一次kbg_58collectCoin.js)
+        // for(let user of userList) {
+        //     await user.collectCoin(); 
+        //     await $.wait(200);
+        // }
         
         console.log('\n================== 查询账户 ==================')
         for(let user of userList) {
