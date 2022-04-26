@@ -655,7 +655,7 @@ class UserInfo {
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        // console.log(result)
+        console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]${item.okMsg}\n`)
             if (result.result?.nextTaskList?.houseworkTaskVOList.length) {
