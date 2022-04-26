@@ -43,10 +43,10 @@ let userList = []
 
 let userIdx = 0
 let userCount = 0
-// 13，15,16 任务报错
+// 13，15,16 任务报错 3 失败: 任务完成频率异常
 // let taskList = [1,2,3,4,5,6,7,9,10,13,15,16]
 // let taskList = [9,10,13]
-let taskList = [1,2,3,4,5,6,7,9,10]
+let taskList = [1,2,4,5,6,7,9,10]
 let TASK_TIME = [7,24]
 let attendType = {'oneDay':'一天打卡', 'multiDay':'三天打卡'}
 
@@ -82,7 +82,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(result)
+        console.log(JSON.stringify(result))
         if(result.code == 0) {
             if(!result.result.taskList) return;
             //status: 0 - 未完成，1 - 已完成，2 - 已领取
@@ -383,7 +383,7 @@ class UserInfo {
             }
             if(this.runTask == 1 && this.mining.enroll==0) {
                 if(parseFloat(result.result.usableOre) >= result.result.threshold) {
-                    await $.wait(500)
+                    await $.wait(1500)
                     await this.miningEnroll()
                 } else {
                     console.log(`账号[${this.index}]可用矿石余额${result.result.usableOre}不足，不能花费${result.result.threshold}矿石召唤小帮手`)
@@ -439,25 +439,33 @@ class UserInfo {
             console.log(`账号[${this.index}]今天${auctionStr}`)
             let maxBid = parseFloat(result.result.userInfo.usableOre)
             let bidNum = 1
+            // 梭哈
             if(this.runTask == 1) {
                 if(this.auction.status==0) {
-                    if(maxBid >= bidNum) {
-                        await $.wait(500)
-                        await this.auctionBid(bidNum)
-                    } else {
-                        console.log(`账号[${this.index}]可用矿石余额${maxBid}不足，不能竞拍出价${bidNum}矿石`)
-                    }
-                } else if(this.auction.status==1) {
-                    let lastBid = parseInt(result.result.bidInfo.bidOre)
-                    bidNum = (lastBid)%3 + 1
-                    if(maxBid >= bidNum) {
-                        await $.wait(500)
-                        await this.auctionModify(bidNum,result.result.bidInfo.auctionNumber)
-                    } else {
-                        console.log(`账号[${this.index}]可用矿石余额${maxBid}不足，不能竞拍出价${bidNum}矿石`)
-                    }
-                }
+                    let tnum = maxBid > 500 ? 500 : parseInt(maxBid);
+                    await $.wait(500)
+                    await this.auctionBid(tnum);
+                } 
             }
+            // if(this.runTask == 1) {
+            //     if(this.auction.status==0) {
+            //         if(maxBid >= bidNum) {
+            //             await $.wait(500)
+            //             await this.auctionBid(bidNum)
+            //         } else {
+            //             console.log(`账号[${this.index}]可用矿石余额${maxBid}不足，不能竞拍出价${bidNum}矿石`)
+            //         }
+            //     } else if(this.auction.status==1) {
+            //         let lastBid = parseInt(result.result.bidInfo.bidOre)
+            //         bidNum = (lastBid)%3 + 1
+            //         if(maxBid >= bidNum) {
+            //             await $.wait(500)
+            //             await this.auctionModify(bidNum,result.result.bidInfo.auctionNumber)
+            //         } else {
+            //             console.log(`账号[${this.index}]可用矿石余额${maxBid}不足，不能竞拍出价${bidNum}矿石`)
+            //         }
+            //     }
+            // }
         } else {
             console.log(`账号[${this.index}]查询低价竞拍主页失败: ${result.message}`)
         }
@@ -676,6 +684,77 @@ class UserInfo {
             console.log(`账号[${this.index}]维修家电或打扫失败: ${result.message}`)
         }
     }
+
+    // 获取可偷矿列表
+    async getStrangerInfo() {
+        let url = `https://magicisland.58.com/web/mining/strangerInfo`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 0) {
+            const canstrangerList = result.result.strangerList.filter((item)=>{
+                return item.status === 0;
+            })
+            console.log(`账号[${this.index}]可偷好友${canstrangerList.length || 0}}\n`)
+            if (canstrangerList.length) {
+                await $.wait(500);
+                await this.stealStranger(canstrangerList[0].id);
+            }
+        } else {
+            console.log(`账号[${this.index}]获取可偷矿列表失败: ${result.message}`)
+        }
+    }
+
+    // 去偷矿
+    async stealStranger(id) {
+        let url = `https://magicisland.58.com/web/mining/stealStranger`
+        let body = `id=${id}`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 0) {
+            // 呸，需要做任务
+            if (result.result.state === 2) {
+                await $.wait(500);
+                await this.getTaskFrame();
+            }
+            
+        } else {
+            console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
+        }
+    }
+
+    // 获取偷矿前置任务类型
+    async getTaskFrame(id) {
+        const sceneId = 34;
+        const openpush = 0;
+        let url = `https://taskframe.58.com/web/task/dolist`
+        let body = `sceneId=${sceneId}&openpush=${openpush}&source=`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 0) {
+            // 呸，需要做任务
+            const taskList = result.result.taskList.filter(item=>{
+                return item.videoContent;
+            })
+            if (taskList[0]) {
+
+            }
+            
+        } else {
+            console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
+        }
+    }
+
+    
 }
 
 !(async () => {
@@ -703,6 +782,11 @@ class UserInfo {
             await user.miningUserInfo(); 
             await $.wait(200);
         }
+        // 偷矿
+        // for(let user of userList) {
+        //     await user.getStrangerInfo(); 
+        //     await $.wait(200);
+        // }
         
         console.log('\n================== 竞拍小游戏 ==================')
         for(let user of userList) {
@@ -792,6 +876,8 @@ class UserInfo {
         //     await user.collectCoin(); 
         //     await $.wait(200);
         // }
+
+
         
         console.log('\n================== 查询账户 ==================')
         for(let user of userList) {
