@@ -211,7 +211,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             for(let item of result.result) {
                 if(item.today == true) {
@@ -236,7 +236,7 @@ class UserInfo {
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]我的家签到成功，获得${result.result.gold}金币`)
         } else {
@@ -244,6 +244,7 @@ class UserInfo {
         }
     }
     
+    // 查询我的家兑换页
     async houseWithdrawPage() {
         let url = `https://lovely-house.58.com/web/exchange/info`
         let body = ``
@@ -251,7 +252,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             this.house.coin = result.result.coin
             console.log(`账号[${this.index}]我的家金币余额：${this.house.coin}`)
@@ -265,6 +266,7 @@ class UserInfo {
         }
     }
     
+    // 我的家金币兑换矿石
     async houseWithdraw(withItem) {
         let url = `https://lovely-house.58.com/web/exchange/ore`
         let body = `id=${withItem.id}`
@@ -272,7 +274,7 @@ class UserInfo {
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]成功兑换${withItem.amount}矿石 ≈ ${withItem.money}元`)
         } else {
@@ -612,6 +614,28 @@ class UserInfo {
             console.log(`账号[${this.index}]查询现金签到失败: ${result.message}`)
         }
     }
+
+    // 查询我的家运行情况，需维修的家电
+    async houseworkList() {
+        let url = `https://lovely-house.58.com/housework/get`
+        let body = ``
+        let urlObject = houseUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(result)
+        if(result.code == 0) {
+            // this.house.coin = result.result.coin
+            console.log(`账号[${this.index}]查询我的家运行情况，需维修的家电`)
+            // let sortList = result.result.oreList.sort(function(a,b) {return b.amount-a.amount})
+            // if(sortList.length>0 && sortList[0].oreStatus == 0 && this.house.coin >= sortList[0].coin) {
+            //     await $.wait(500)
+            //     await this.houseWithdraw(sortList[0])
+            // }
+        } else {
+            console.log(`账号[${this.index}]查询我的家兑换页失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -622,104 +646,25 @@ class UserInfo {
         console.log('====================\n')
         console.log(`如果要自定义UA，请把UA填到wbtcUA里，现在使用的UA是：\n${userUA}`)
         
-        console.log('\n================== 现金签到 ==================')
-        // 查询现金签到状态
-        for(let user of userList) {
-            await user.cashSigninlist(); 
-            await $.wait(200);
-        }
-        // 现金签到没签到的用户进行签到
-        for(let user of userList.filter(x => x.cashSign)) {
-            await user.cashSignin(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n================== 矿山小游戏 ==================')
-        for(let user of userList) {
-            await user.miningUserInfo(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n================== 竞拍小游戏 ==================')
-        for(let user of userList) {
-            await user.auctionInfo(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n================== 打卡小游戏 ==================')
-        for(let user of userList) {
-            await user.oreMainpage(false); 
-            await $.wait(200);
-        }
-        
-        for(let user of userList) {
-            await user.attendanceDetail(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n================== 金币任务 ==================')
-        if(curHour>=TASK_TIME[0] && curHour<TASK_TIME[1]) {
-            console.log('\n查询任务...')
-            for(let id of taskList) {
-                for(let user of userList) {
-                    await user.getTaskList(id); 
-                    await $.wait(200);
-                }
-            }
-            
-            for(let user of userList) {
-                maxTaskLen = getMax(user.task.length,maxTaskLen)
-                maxRewardLen = getMax(user.reward.length,maxRewardLen)
-            }
-            
-            console.log('\n完成任务...')
-            for(let i=0; i<maxTaskLen; i++) {
-                for(let user of userList.filter(x => i<x.task.length)) {
-                    let item = user.task[i]
-                    await user.doTask(item.sceneId,item.taskId); 
-                    await $.wait(200);
-                    await user.getReward(item.sceneId,item.taskId); 
-                    await $.wait(200);
-                }
-                await $.wait(15000);
-            }
-            
-            console.log('\n领取奖励...')
-            for(let i=0; i<maxRewardLen; i++) {
-                for(let user of userList.filter(x => i<x.reward.length)) {
-                    let item = user.reward[i]
-                    await user.getReward(item.sceneId,item.taskId); 
-                    await $.wait(500);
-                }
-                await $.wait(1000);
-            } 
-        } else {
-            console.log(`${TASK_TIME[0]}点到${TASK_TIME[1]}点之间会做金币任务`)
-        }
-        
-        console.log('\n================== 新手奖励 ==================')
-        for(let user of userList) {
-            await user.newbieMaininfo(); 
-            await $.wait(200);
-        }
-        
         console.log('\n================== 我的家奖励 ==================')
+        // for(let user of userList) {
+        //     await user.houseSignStatus(); 
+        //     await $.wait(200);
+        // }
+        
+        // for(let user of userList) {
+        //     await user.houseWithdrawPage(); 
+        //     await $.wait(200);
+        // }
+
+        console.log('\n================== 我的家任务 ==================')
+        // 家电
         for(let user of userList) {
-            await user.houseSignStatus(); 
+            await user.houseworkList(); 
             await $.wait(200);
         }
-        
-        for(let user of userList) {
-            await user.houseWithdrawPage(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n================== 查询账户 ==================')
-        for(let user of userList) {
-            await user.oreMainpage(true); 
-            await $.wait(200);
-        }
-        
+
+
     }
 })()
 .catch((e) => $.logErr(e))
@@ -785,6 +730,76 @@ async function showmsg() {
     }
 }
 ////////////////////////////////////////////////////////////////////
+function houseUrlObject(url,cookie,body=''){
+    let urlObject = {
+        url: url,
+        headers: {
+            bangbangid:"86982649255175",
+            productorid:"3",
+            charset:"UTF-8",
+            cidsource:"2",
+            coordinatetype:"10",
+            nettype:"WIFI",
+            webua:"Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 WUBA/11.2.1",
+            uuid:"7EFAEBC6-2614-4CEA-8CCD-A8A49FB21F61",
+            machine:"iPhone11,8",
+            platform:"iphone",
+            xxzl_smartid:"b7d396649d5a3185a440278e5f14dfd0",
+            jumpextra:"{spm:'',utm_source:''}",
+            imei:"0f607264fc6318a92b9e13c65db7cd3c",
+            ipcity:"4",
+            xxwxtokenp:"2$YmVFnHhSiagsC3muhd0BGQJm43_fj5JQ94oZ_fu1n6WlUEtFw6oQFP4mMfQWFVZPVTcnPvnjdZrMR6ILnjWv2sk1hfvz57_6_W3OIbY76yCMtseaTIdne38_mXd53uRYAEZ632WPx8k_KlWqErKi17g2KiOvcWpxNcaL-cOri7ExIDGstm-6bAvv9bE_hTdNiI-e17nAiuxDWyUUznweQKuvFBTaLbuYeEWJI2a2uo8J0GOnz_BFT1SzjXNprxVy3bDANl4WvqT_GOcJnPd04S0crzWPCov990mt3K3XguXJ2RNrj0XzMNhi-42qruUfs82wv-bUZ60iqflzjMNw2Q==",
+            deny:"2.000000",
+            ppu:"UID=86982649255175&UN=svv6gz2tg&TT=285bc1cbff9cc1e588c65ee539db266a&PBODY=NvCGEm_XFpN32fj93yUwp8cL1ToRQKi1xv1LDKj1PVLqXZ2AO2HqIuMxq9swkn8SEENf4qlG6YG5X3pdWihcUE7-wK-pCXMYOjdJcUB8TFLPcwV8GNpAldSQcXKSc2Dlnw08SXc6kZFK3M85f6PeW1Fm2hK8s1aE0Kk4LP5SpZc&VER=1&CUID=YrxgOzgaQv-5bwdq4o834A",
+            apn:"WIFI",
+            cid:"4",
+            locationaccuracy:"100000.000000",
+            areaid:"",
+            ua:"iPhone XR_iOS 15.4",
+            brand:"Apple",
+            osv:"15.4",
+            os:"ios",
+            adnop:"46001",
+            bundle:"com.taofang.iphone",
+            townlocalid:"",
+            sh:"896",
+            coordinatesystem:"GCJ-02",
+            xxzl_deviceid:"cgavRGRGwTBXlECMlhtH1/GYp8OT7WsNyePxPCMGteON2Of9W07ixUlvqiREeOxp",
+            xxzlcid:"8256d988c89a40ca9b5926e2248a50fe",
+            nop:"46001",
+            uploadtime:"20220426163107",
+            xxwxtoken:"Ox4ADH1wDy_xebhBo20Exj_5iSeb6mSUNt0GZc76m3YFl8AfiFBxlp2m2hjhPK0vNTrV7qPr_3ZkAjwObnVznmLuzgKZStH1LepbgeXwUEnqnygPrLSgcJmoZf0Ao_ywwxw9-AtmNU-fapEuTUShZ__BinGQlHqGlbv4B4VQ3Jf6HH9N6Vj0b-ZfpvGDn9xY",
+            totalsize:"59.6G",
+            f:"58",
+            sid:"0",
+            "58openudid":"8233C561-95DF-40A6-8EEF-6A1FC0F64129",
+            id58:"105550433905641",
+            wbuversion:"11.2.1",
+            cimei:"0f607264fc6318a92b9e13c65db7cd3c",
+            scale:"1",
+            firstopentime:"1649225529798",
+            openudid:"4129735f488f4c210fc4ef808bb327dc7f1d62f1",
+            push:"1",
+            vlocalid:"",
+            xxzlsid:"6c3kfI-Rqv-LKq-SaD-1lRYCOa6A",
+            xxzl_cid:"8256d988c89a40ca9b5926e2248a50fe",
+            r:"1792_828",
+            uid:"86982649255175",
+            "58ua":"58app",
+            xxaqrid:"8d98a28754",
+            "xxzl-cid":"8256d988c89a40ca9b5926e2248a50fe",
+            tp:"iPhone XR",
+            version:"11.2.1",
+            channelid:"80000",
+            uniqueid:"0f607264fc6318a92b9e13c65db7cd3c",
+            '58mac':"02:00:00:00:00:00",
+            sw:"414",
+            dirname:"sz"
+        },
+    }
+    if(body) urlObject.body = body
+    return urlObject;
+}
 function populateUrlObject(url,cookie,body=''){
     let host = (url.split('//')[1]).split('/')[0]
     let urlObject = {
