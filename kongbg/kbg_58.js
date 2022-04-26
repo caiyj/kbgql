@@ -82,7 +82,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             if(!result.result.taskList) return;
             //status: 0 - 未完成，1 - 已完成，2 - 已领取
@@ -130,7 +130,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         // if(!result) return
-        console.log(result)
+        // console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
         } else {
@@ -416,7 +416,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(result)
+        // console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]神奇矿山召唤小帮手成功`)
         } else {
@@ -517,7 +517,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(result)
+        // console.log(result)
         if(result.code == 0) {
             let attendList = ''
             console.log(`账号[${this.index}]今天打卡状态:`)
