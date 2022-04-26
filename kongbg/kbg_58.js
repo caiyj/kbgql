@@ -43,9 +43,10 @@ let userList = []
 
 let userIdx = 0
 let userCount = 0
-
-let taskList = [1,2,3,4,5,6,7,9,10,13,15,16]
+// 13，15,16 任务报错
+// let taskList = [1,2,3,4,5,6,7,9,10,13,15,16]
 // let taskList = [9,10,13]
+let taskList = [1,2,3,4,5,6,7,9,10]
 let TASK_TIME = [7,24]
 let attendType = {'oneDay':'一天打卡', 'multiDay':'三天打卡'}
 
@@ -73,7 +74,7 @@ class UserInfo {
         let taskStr = this.runTask==1 ? '投入' : '不投入'
         console.log(`账号[${this.index}]现在小游戏矿石设置为：${taskStr}`)
     }
-    
+    // 查询任务列表
     async getTaskList(sceneId) {
         let url = `https://taskframe.58.com/web/task/dolist?sceneId=${sceneId}&openpush=0&source=`
         let body = ``
@@ -129,7 +130,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(result)
+        console.log(result)
         if(result.code == 0) {
             console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
         } else {
@@ -286,7 +287,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(result)
+        // console.log(result)
         if(result.code == 0) {
             this.ore.sign = result.result.tasks.sign.state
             this.ore.dailyore = result.result.userInfo.dailyOre
