@@ -870,6 +870,40 @@ class UserInfo {
             console.log(`账号[${this.index}]领取评论奖励失败: ${result.message}`)
         }
     }
+
+    // 免费抽奖
+    async getAwardUserList() {
+        let url = `https://magicisland.58.com/web/roulette/getAwardUserList?pageNum=1&pageSize=5&state=1`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            if (result.result.reward.length) {
+                console.log(`账号[${this.index}]有未提现的红包，暂时不能继续抽奖`);
+                for(let i = 0; i<result.result.reward.length; i++) {
+                    const reward = result.result.reward[i];
+                    if (reward.type === 1) {
+                        const doneStrMap = {
+                            0: '未完成',
+                            1: '已完成',
+                            2: '未领取',
+                            3: '已领取',
+                        }
+                        console.log(`账号[${this.index}]红包${i+1}:${reward.actualNumber}元，${reward.currentNumber}/${reward.total} ${doneStrMap[reward.awardState]}`);
+                    }
+                }
+                return
+            }
+            if (result.result.totalNum) {
+                console.log(`账号[${this.index}]有:${result.result.totalNum}次免费抽奖机会`);
+            }
+        } else {
+            console.log(`账号[${this.index}]领取评论奖励失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -895,7 +929,14 @@ class UserInfo {
             }
         }
 
-        await $.wait(delay()); //  随机延时
+        // await $.wait(delay()); //  随机延时
+
+        console.log('\n============ 神奇矿-免费抽奖 ============')
+        // 免费抽奖
+        for(let user of userList) {
+            await user.getAwardUserList(); 
+            await $.wait(200);
+        }
         
         console.log('\n============ 现金签到 ============')
         // 查询现金签到状态
