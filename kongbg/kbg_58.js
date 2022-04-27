@@ -887,8 +887,8 @@ class UserInfo {
             const y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
             const year = `${y}-${m < 10 ? '0'+m : m}-${d < 10 ? '0'+d : d}`
 
-            const start = new Date(`${year} ${tokenInfo.disableStartTime}`).getTime();
-            const end   = new Date(`${year} ${tokenInfo.disableEndTime}`).getTime();
+            const start = new Date(`${year} ${disableStartTime}`).getTime();
+            const end   = new Date(`${year} ${disableEndTime}`).getTime();
             if (dateTimes > start && dateTimes<end) {
                 console.log('设置了禁止推送时间段 以下时间段不做任务');
                 return; 
