@@ -125,6 +125,9 @@ class UserInfo {
     }
     
     async getReward(sceneId,taskId) {
+        if (sceneId === 4 && [5013,1877].includes(taskId) || sceneId === 5 && [1895,1903].includes(taskId)) {
+            return;
+        }
         var time = `${(new Date()).getTime()}`
         var signo = `${time}${taskId}`
         let url = `https://taskframe.58.com/web/task/reward?timestamp=${time}&sign=${MD5Encrypt(signo)}&taskId=${taskId}`
