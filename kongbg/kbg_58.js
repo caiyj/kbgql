@@ -904,6 +904,48 @@ class UserInfo {
             console.log(`账号[${this.index}]领取评论奖励失败: ${result.message}`)
         }
     }
+    
+    // 查询我的家家务清单
+    async houseWorkList() {
+        let url = `https://lovely-house.58.com/housework/list`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            const items = result.result.items || [];
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                console.log(`账号[${this.index}]任务[${item.taskName}] ${item.currValNum}/${item.tarValNum} +${item.formatGold} ${item.btnTitle}\n`);
+                if (item.state === 2) {
+                    await $.wait(200);
+                    this.houseWorkCollect();
+                }
+            }
+        } else {
+            console.log(`账号[${this.index}]查询我的家家务清单失败: ${result.message}`)
+        }
+    }
+
+    // 我的家家务清单领取奖励
+    async houseWorkCollect() {
+        let url = `https://lovely-house.58.com/housework/collect`
+        let body = `_d=ODM1ZHx2a25aNzZabzpaZiA3OTgyWnMjImFabnQgMVoie1tublNYcWVxMmtZLGpaNzt7ZmJadVYwOHRUNDJmNFpfa2NqazNNO29wOE5CVlREYTlHYjhTPmJxInNaZGFjYiJ2IEUtQ0QiNWRlOHlsIiAiOTZuZSBuaTdiOWFaIm1pLG8gIGxaWiIeQUFHT3RiQU1lTzQ3Wm4iNjUiYWtuWkk2MzlVYWZmNztWPE0xMUR5VEVnMFw4O1RqOTNrRVM+V083LG8iNjk6ZSx2WkE3RUBaZTZjZgpmHiAeNjQgeFogWjkwYjcicFpwWmd0IG0jInc6UW5vbVF9bmNjY25bbmgeMTcqZSIgIkU1J2U7YDU4X0xGNDF2Tk1yRjdYek1SRWNxaWQyM24vcndvWmoeMzRmOlppJTdELjNvNzAuNyB5Olo6MDggYyIgImIzMmMsbSJrbloyWm4yLHIgNUVLelJRODc/P0JKIHM6LjEKYx4gHj03U3gyZDg0Jnlueld3VjI8Q1xpTGpGTlt3WDZrTl0pey47bnI6NTE0Y25kOCtGQS97MjIwNh5RHiMgNjVadDRaHjc3YmBaYR5tICJaIFovWmxacmRSUHBsb3N9bm9rIHUgOVogcjpaOjYzTzI5Zzs5TkZRWG0xTUl2TEhrLWJMcU4wSVFLa2FEajMzIHYgMDk2ZyBaQzBCOUQgODc2YiNfJXZaNVoiWlojOjc1MTZucjpvIB4idyIsbmMlVnV4UjU0eE9oODNOWmJaNSIeUR4iIDc2QHczPGFiRUgxd1NMcXJ6ZjVkc01TQVY7Tmg7NCRWTWU1IGZaNmJhNiAiRzctQTcLNjY4M2Jze2kiNyJuIiJqIDRiMzcgaSBlWjosYx4wIG5RVnpfbXl5YXFuUXBaIm0jMFoiXyVwWjk2cWVlZjdgT0YwcFRHVkppNVtWQ2RmbGFTNFh0TFdJfXdBWmkiMjc3Y1oeQjE7NTF9M2Q5ZmhiWmQ2Myx1HixuWmc6ODEgbVpaIyBadTovIFpwNk5TN3dlRjU6Uk4idXAvMm9pc3txIzY0dCZkZDYwRXBkO0xJWHZucTNIWVN1ZzJbTS8yUUNFaGVaI2QuaTA1WiM6QzVGN1o=|V2dDd1dpW4FUdUlTdzB2Y1tYWE88N300N01JZW5TfmCHam9XN1h5hns8iDpAeklKTXBwQE43TTlUYk5IfUdbX3NzUUg4e4JUZzlHUl03dzuAcGBATFZEhn5pWzRjOn57d3s9OXB7XTlPa31HWk1chFyGhVQ7XltudmiKUDlEazhPajt6b2hMOUJATjlNOTtLRk87N2l6QTVqNEw6bEJ-T29MbWpMUYdfgV-CUGJEVV8=|zj0yMYO4paus2COJ/Pmr+gbOvPgDymL9kvZ8tbviwlk8QbEtNNMPi/ZJujmNxQarCvQFaFGoh7grQmA0+U+Xdi6Ap3ZfRyJs84f/dKYNi9w=`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('post',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            // if (result.data.money) {
+            //     console.log(`账号[${this.index}]领取评论奖励成功，到账: ${result.data.money}`);
+            // }
+        } else {
+            console.log(`账号[${this.index}]领取评论奖励失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -932,6 +974,7 @@ class UserInfo {
         // await $.wait(delay()); //  随机延时
 
         console.log('\n============ 神奇矿-免费抽奖 ============')
+
         // 免费抽奖
         for(let user of userList) {
             await user.getAwardUserList(); 
@@ -998,6 +1041,12 @@ class UserInfo {
         // 查询我的家兑换页
         for(let user of userList) {
             await user.houseWithdrawPage(); 
+            await $.wait(200);
+        }
+
+        // 我的家家务清单领取奖励
+        for(let user of userList) {
+            await user.houseWorkList(); 
             await $.wait(200);
         }
 
