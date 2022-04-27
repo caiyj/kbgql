@@ -692,13 +692,11 @@ class UserInfo {
             await user.collectCoin(); 
             await $.wait(200);
         }
-        
-        console.log('\n================== 查询账户 ==================')
+
         for(let user of userList) {
-            await user.oreMainpage(true); 
+            await user.houseWithdrawPage(); 
             await $.wait(200);
         }
-        
     }
 })()
 .catch((e) => $.logErr(e))

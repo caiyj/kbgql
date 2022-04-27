@@ -706,7 +706,7 @@ class UserInfo {
             const canstrangerList = result.result.strangerList.filter((item)=>{
                 return item.status === 0;
             })
-            console.log(`账号[${this.index}]可偷好友${canstrangerList.length || 0}}\n`)
+            console.log(`账号[${this.index}]可偷取好友${canstrangerList.length || 0}个\n`)
             if (canstrangerList.length) {
                 await $.wait(500);
                 await this.stealStranger(canstrangerList[0].id);
@@ -718,27 +718,30 @@ class UserInfo {
 
     // 去偷矿
     async stealStranger(id) {
-        let url = `https://magicisland.58.com/web/mining/stealStranger`
-        let body = `id=${id}`
+        let url = `https://magicisland.58.com/web/mining/stealStranger?id=${id}`
+        let body = ``
         let urlObject = populateUrlObject(url,this.cookie,body)
+        console.log('去偷矿-urlObject:', urlObject)
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        // console.log(result)
+        console.log(result)
         if(result.code == 0) {
-            // 呸，需要做任务
-            if (result.result.state === 2) {
+            if (result.result.state === 0) {
                 await $.wait(500);
-                await this.getTaskFrame();
+                console.log(`账号[${this.index}]已经偷取${result.result.ore}mg矿石`)
+            } else if (result.result.state === 2) {// 呸，需要做任务
+                console.log('呸，需要做任务, 今天暂时不偷了')
+                // await $.wait(500);
+                // await this.getTaskFrame();
             }
-            
         } else {
             console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
         }
     }
 
     // 获取偷矿前置任务类型
-    async getTaskFrame(id) {
+    async getTaskFrame() {
         const sceneId = 34;
         const openpush = 0;
         let url = `https://taskframe.58.com/web/task/dolist`
@@ -749,20 +752,23 @@ class UserInfo {
         if(!result) return
         // console.log(result)
         if(result.code == 0) {
+            console.log('呸，需要做任务, 今天暂时不偷了')
+            // wbmain://jump/house/houseCategory?params={"cateid":"1","title":"租房","list_name":"zufang","params":{},"url":"https://houserentapp.58.com/house/Api_get_tab_config","isFromMainPage":true}&ABMark=null&needLogin=false
+            // https://taskframe.58.com/web/task/dotask?timestamp=1651028184487&sign=120ea6efbcd563c01b3a011a5adfaa31&taskId=5071&taskData=1
             // 呸，需要做任务
-            const taskList = result.result.taskList.filter(item=>{
-                return item.videoContent;
-            })
-            if (taskList[0]) {
-
-            }
+            // const taskList = result.result.taskList.filter(item=>{
+            //     return item.videoContent;
+            // })
+            // if (taskList[0]) {
+            //     await $.wait(500);
+            //     const itemId = taskList[0].itemId;
+            //     const itemName = taskList[0].itemName;
+            // }
             
         } else {
             console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
         }
     }
-
-    
 }
 
 !(async () => {
@@ -791,10 +797,10 @@ class UserInfo {
             await $.wait(200);
         }
         // 偷矿
-        // for(let user of userList) {
-        //     await user.getStrangerInfo(); 
-        //     await $.wait(200);
-        // }
+        for(let user of userList) {
+            await user.getStrangerInfo(); 
+            await $.wait(200);
+        }
         
         console.log('\n================== 竞拍小游戏 ==================')
         for(let user of userList) {
@@ -1009,6 +1015,7 @@ async function httpRequest(method,url) {
 }
 
 function safeGet(data) {
+    console.log('data:', data)
     try {
         if (typeof JSON.parse(data) == "object") {
             return true;
