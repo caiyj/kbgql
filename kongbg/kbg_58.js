@@ -105,6 +105,9 @@ class UserInfo {
     }
     
     async doTask(sceneId,taskId) {
+        if (sceneId === 4 && [5013,1877].includes(taskId) || sceneId === 5 && [1895,1903].includes(taskId)) {
+            return;
+        }
         var time = `${(new Date()).getTime()}`
         var signo = `${time}${taskId}`
         let url = `https://taskframe.58.com/web/task/dotask?timestamp=${time}&sign=${MD5Encrypt(signo)}&taskId=${taskId}`//&taskData=15`
@@ -113,7 +116,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]完成任务[${sceneId}-${taskId}]`)
         } else {
@@ -130,7 +133,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         // if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
         } else {
@@ -439,10 +442,12 @@ class UserInfo {
             console.log(`账号[${this.index}]今天${auctionStr}`)
             let maxBid = parseFloat(result.result.userInfo.usableOre)
             let bidNum = 1
+            console.log(maxBid)
             // 梭哈
             if(this.runTask == 1) {
                 if(this.auction.status==0) {
                     let tnum = maxBid > 500 ? 500 : parseInt(maxBid);
+                    console.log(tnum)
                     await $.wait(500)
                     await this.auctionBid(tnum);
                 } 
@@ -629,7 +634,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             if (result.result.houseworkTaskVOList.length) {
                 console.log(`账号[${this.index}]家里有情况`);
