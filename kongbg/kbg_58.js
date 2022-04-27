@@ -88,15 +88,17 @@ class UserInfo {
             //status: 0 - 未完成，1 - 已完成，2 - 已领取
             for(let task of result.result.taskList) {
                 let doneStr = ''
-                if(task.taskTotalCount) {
+                if (task.taskDoneCount < task.taskTotalCount && task.taskTotalCount) {
+
                     doneStr = ` ${task.taskDoneCount}/${task.taskTotalCount}`
-                }
-                let statusStr = (task.status==0) ? '未完成' : ((task.status==1) ? '已完成' : '已领取')
-                console.log(`账号[${this.index}]任务[${sceneId}-${task.itemId}](${task.itemName}):${doneStr} +${task.rewardDisplayValue} ${statusStr}`)
-                if(task.status == 0) {
-                    this.task.push({sceneId:sceneId,taskId:task.itemId})
-                } else if(task.status == 1) {
-                    this.reward.push({sceneId:sceneId,taskId:task.itemId})
+
+                    let statusStr = (task.status==0) ? '未完成' : ((task.status==1) ? '已完成' : '已领取')
+                    console.log(`账号[${this.index}]任务[${sceneId}-${task.itemId}](${task.itemName}):${doneStr} +${task.rewardDisplayValue} ${statusStr}`)
+                    if(task.status == 0) {
+                        this.task.push({sceneId:sceneId,taskId:task.itemId})
+                    } else if(task.status == 1) {
+                        this.reward.push({sceneId:sceneId,taskId:task.itemId})
+                    }
                 }
             }
         } else {
@@ -797,6 +799,74 @@ class UserInfo {
             console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
         }
     }
+
+    // 查询每日任务完成情况
+    async dailyTaskList() {
+        let url = `https://tzbl.58.com/tzbl/taskcenter/tasklist?type=1&requestSource=1`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            const dailyTaskList = result.data.filter(item=>{
+                return item.groupId === 2
+            });
+            const task = dailyTaskList[0].taskList[0];
+            const pos = task.pos;
+            const high = task.high;
+            if (pos < high) {
+                if (['去评论', '继续评论'].includes(task.btn.desc)) {
+                    // await $.wait(500);
+                    // this.reviewMsg();
+                } else if (['领取'].includes(task.btn.desc)){
+                    await $.wait(500);
+                    await this.awardCash(task);
+                }
+            } else {
+                console.log(`账号[${this.index}]每日评论: ${pos}/${high} 已完成\n`)
+            }
+        } else {
+            console.log(`账号[${this.index}]查询每日任务完成情况失败: ${result.message}`)
+        }
+    }
+
+    // 评论
+    async reviewMsg(task) {
+        let pos = task.pos;
+        const high = task.high;
+        let url = `https://tzbl.58.com/tzbl/taskcenter/tasklist?type=1&requestSource=1`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            console.log(`账号[${this.index}]评论成功: ${pos+1}/${high} +1\n`)
+        } else {
+            console.log(`账号[${this.index}]评论失败: ${result.message}`)
+        }
+    }
+    // 领取评论奖励
+    async awardCash(task) {
+        const taskId = task.id;
+        let url = `https://tzbl.58.com/tzbl/taskcenter/award?taskId=${taskId}&requestSource=1`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            if (result.data.money) {
+                console.log(`账号[${this.index}]领取评论奖励成功，到账: ${result.data.money}`);
+            }
+        } else {
+            console.log(`账号[${this.index}]领取评论奖励失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -813,6 +883,13 @@ class UserInfo {
             await user.cashSigninlist(); 
             await $.wait(200);
         }
+
+        // // 查询每日任务完成情况(评论领现金) - 开发中
+        // for(let user of userList) {
+        //     await user.dailyTaskList(); 
+        //     await $.wait(200);
+        // }
+
         // 现金签到没签到的用户进行签到
         for(let user of userList.filter(x => x.cashSign)) {
             await user.cashSignin(); 
