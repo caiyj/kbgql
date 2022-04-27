@@ -674,7 +674,7 @@ class UserInfo {
         if(!result) return
         // console.log(result)
         if(result.code == 0) {
-            console.log(`账号[${this.index}]收取${result.result}金币}`)
+            console.log(`账号[${this.index}]收取${result.result}金币`)
         } else {
             console.log(`账号[${this.index}]维修家电或打扫失败: ${result.message}`)
         }
