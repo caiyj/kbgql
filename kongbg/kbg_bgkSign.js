@@ -9,7 +9,7 @@ ck就是 appwk.baidu.com 域名下任意请求里的整个完整cookie
 自己抓包不挂科
 ===========================
 [Script]
-cron "1 0/30 * * *" script-path=kbg_bgkSign.js, tag=不挂科签到
+cron "1 0/30 * * *" script-path=kbg_bgkSign.js, tag=不挂科签到, enabled=true
 */
 const $ = new Env('不挂科签到');
 const jsname = "不挂科签到";

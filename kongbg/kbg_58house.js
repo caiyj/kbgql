@@ -19,10 +19,10 @@
 
 ===========================
 [Script]
-cron "0,0 * * * *" script-path=kbg_58.js, tag=58同城, enabled=true
+cron "10 7 * * *" script-path=kbg_58house.js, tag=58同城house, enabled=false
 */
-const jsname = '58同城'
-const $ = Env('58同城')
+const jsname = '58同城house'
+const $ = Env('58同城house')
 const logDebug = 0
 
 const notifyFlag = 1; //0为关闭通知，1为打开通知,默认为1
@@ -39,17 +39,21 @@ let userList = []
 let userIdx = 0
 let userCount = 0
 
+
 // let taskList = [1,2,3,4,5,6,7,9,10,13,15,16]
 /**
  * 1-领体力 活动路径：提现->大富翁
- * 2，3，5，9，10，13，15-未知
+ * 2，3，9，10，13，15-未知
  * 4-梦想小镇任务
  * 6-大富翁随机任务列表，最好不要直接运行 看样子7也类似，待确认
+ * 20 神奇矿鸡腿任务
+ * 21 神奇矿金币任务
+ * 5-梦想小镇。车场离线奖励翻倍任务
  */
- let taskList = [1, 4];
+let taskList = [1, 4, 20, 21];
 let TASK_TIME = [7, 24]
 let attendType = {'oneDay':'一天打卡', 'multiDay':'三天打卡'}
-
+// https://dreamtown.58.com/web/mine/employ 雇佣
 let curHour = (new Date()).getHours()
 
 let maxTaskLen = 0
@@ -80,6 +84,10 @@ class UserInfo {
         this.maininfo = {} // 梦想小镇详情
         this.showCar = false // 是否展示过车等级信息
         this.showHouse = false // 是否展示过房子等级信息
+        this.mineMaininfo = null // 神奇矿页面查询
+        this.tryNum = 1
+        this.waitTime = 120000
+        this.buyNum= 0
         
         let taskStr = this.runTask==1 ? '投入' : '不投入'
         console.log(`账号[${this.index}]现在小游戏矿石设置为：${taskStr}`)
@@ -145,13 +153,14 @@ class UserInfo {
         let urlObject = populateUrlObject(url,this.cookie,body)
         await httpRequest('get',urlObject)
         let result = httpResult;
-        // if(!result) return
+        if(!result) return
         // console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
             return true;
         } else {
-            // 偷矿任务 code = 2 也是成功
+            // 偷矿任务 code = 2 也是成功 具体看message
+            console.log(JSON.stringify(result))
             if (result.code == 2 && result.message == "任务已完成") {
                 console.log(`账号[${this.index}]领取任务[${sceneId}-${taskId}]奖励成功`)
                 return true;
@@ -388,7 +397,7 @@ class UserInfo {
             console.log(`账号[${this.index}]神奇矿签到失败: ${result.message}`)
         }
     }
-    // 查询神奇矿山主页
+    // 神奇矿山-查询主页
     async miningUserInfo() {
         let url = `https://magicisland.58.com/web/mining/userInfo`
         let body = ``
@@ -421,7 +430,7 @@ class UserInfo {
             console.log(`账号[${this.index}]查询神奇矿山主页失败: ${result.message}`)
         }
     }
-    
+    // 神奇矿山-收取矿石
     async miningGain(id) {
         let url = `https://magicisland.58.com/web/mining/gain?id=${id}`
         let body = ``
@@ -439,7 +448,7 @@ class UserInfo {
             console.log(`账号[${this.index}]todo: 推送提醒信息`)
         }
     }
-    // 神奇矿山召唤小帮手
+    // 神奇矿山-召唤小帮手
     async miningEnroll() {
         let url = `https://magicisland.58.com/web/mining/enroll`
         let body = ``
@@ -645,7 +654,7 @@ class UserInfo {
             console.log(`账号[${this.index}]查询现金签到失败: ${result.message}`)
         }
     }
-    // 现金签到没签到的用户进行签到
+    // 现金签到
     async cashSignin() {
         let url = `https://tzbl.58.com/tzbl/taskcenter/signin?requestSource=1`
         let body = ``
@@ -743,10 +752,9 @@ class UserInfo {
                 })
                 // 降序排列
                 canstrangerList = canstrangerList.sort(compare('ore'));
-
                 console.log(`账号[${this.index}]可偷取好友${canstrangerList.length || 0}个`)
                 console.log(`账号[${this.index}]开始第${strangerCurrent+1}次偷矿`);
-                console.log(`账号[${this.index}]开始偷${canstrangerList[0].nickname}的矿`)
+                // console.log(`账号[${this.index}]开始偷${canstrangerList[0].nickname}的矿`)
 
                 if (canstrangerList.length) {
                     await $.wait(500);
@@ -770,13 +778,14 @@ class UserInfo {
         if(!result) return
         // console.log(result)
         if(result.code == 0) {
+            // 直接偷矿
             if (result.result.state === 0) {
                 await $.wait(500);
                 console.log(`账号[${this.index}]偷到${result.result.ore}mg矿石`);
                   await this.getStrangerInfo();
-            } else if (result.result.state === 2) {
+            } else if (result.result.state === 2) {// 做任务偷矿
                 console.log('呸，需要做任务')
-                await $.wait(500);
+                await $.wait(200);
                 await this.getTaskFrame();
             }
         } else {
@@ -812,12 +821,13 @@ class UserInfo {
                     await this.getStrangerInfo();
                 }
             } else if (taskDescription.includes('关注3个服务号')) {
-                const res = await this.getRecommendAtion();
-                if (res) {
-                    await $.wait(200);
-                    // 做完任务，继续偷矿
-                    await this.getStrangerInfo();
-                }
+                console.log('关注3个服务号 待开发')
+                // const res = await this.getRecommendAtion();
+                // if (res) {
+                //     await $.wait(200);
+                //     // 做完任务，继续偷矿
+                //     await this.getStrangerInfo();
+                // }
             }
         } else {
             console.log(`账号[${this.index}]去偷矿失败: ${result.message}`)
@@ -1017,7 +1027,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        //console.log(JSON.stringify(result))
+        console.log('抽奖:', JSON.stringify(result))
         if(result.code == 0) {
             const info = this.awardList.find((iten)=>{
                 return iten.type === result.result.type;
@@ -1195,22 +1205,30 @@ class UserInfo {
             console.log(`账号[${this.index}]建筑加速失败: ${result.message}`)
         }
     }
+    // 获取空地数量
+    getEmtry () {
+        let emtry = 0;
+        for (const key in this.maininfo.locationInfo) {
+            if (this.maininfo.locationInfo[key] === null) {
+                emtry+=1;
+            }
+        }
+        return emtry;
+    }
 
     // 梦想小镇-合成建筑
     async compound() {
+        // 获取可合成的地块
         const info = this.compoundInfo();
+        this.buyNum = 0;
+        // 没有可合成地块
         if (!info || info.fromId === info.toId) {
-            let emtry = 0;
-            for (const key in this.maininfo.locationInfo) {
-                if (this.maininfo.locationInfo[key] === null) {
-                    emtry+=1;
-                }
-            }
+            let emtry = this.getEmtry();
             if (emtry) {
                 console.log(`账号[${this.index}]没有可合成地块,但有${emtry}块空地，安排！`);
                 await this.buyBuild(emtry);
             } else {
-                console.log(`账号[${this.index}]没有可合成地块,也没有空地，删除等级最低的！`);
+                console.log(`账号[${this.index}]没有可合成地块,也没有空地，卖掉等级最低的！`);
                 const minInfo = this.findMin();
                 if (minInfo) {
                     await this.sellBuild(minInfo.locationIndex);
@@ -1218,18 +1236,19 @@ class UserInfo {
                     await this.dreamTownmainInfo();
                     await $.wait(200);
                     await this.compound();
+                    return
                 }
             }
             return
         }
-        console.log('info:', info)
+        // console.log('info:', info)
         let url = `https://dreamtown.58.com/web/dreamtown/compound`
         let body = `fromId=${info.fromId}&toId=${info.toId}`
         let urlObject = populateUrlObject(url,this.cookie,body)
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]地块${info.fromId}合向地块${info.toId}， 地块${info.toId}升级到${info.level+1}级`);
 
@@ -1237,6 +1256,7 @@ class UserInfo {
             const sceneId = 6;
             const taskId = result.result.itemId;
             if (taskId) {
+                console.log(`账号[${this.index}]获得奖励任务`);
                 await $.wait(200);
                 // 做任务
                 await this.doTask(sceneId, taskId);
@@ -1307,14 +1327,14 @@ class UserInfo {
             console.log(`账号[${this.index}]购买失败：购买建筑等级未知`)
             return;
         }
-        if (Number(this.maininfo.userInfo.coin) < Number(this.maininfo.fastBuyInfo.price)) {
-            console.log(`账号[${this.index}]钱不够，购买下一等级`)
+        if (Number(this.maininfo.userInfo.coin) < (Number(this.maininfo.fastBuyInfo.price) * 1.2)) {
+            // console.log(`账号[${this.index}]钱不够，购买下一等级`)
             await this.dreamTownmainInfo();
             await $.wait(200);
             level = this.maininfo.fastBuyInfo.level;
         }
 
-        console.log('level:', level)
+        // console.log('level:', level)
 
         let url = `https://dreamtown.58.com/web/dreamtown/buy`
         let body = `type=quick&level=${level}`
@@ -1322,12 +1342,14 @@ class UserInfo {
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log('购买结果：',JSON.stringify(result))
+        // console.log('购买结果：',JSON.stringify(result))
         if(result.code == 0) {
             if (result.result.state === 0) {
+                this.buyNum++;
+                this.tryNum = 1;
                 await $.wait(100);
                 await this.dreamTownmainInfo();
-                num-=1;
+                num--;
                 if (num) {
                     await $.wait(200);
                     await this.buyBuild(num);
@@ -1338,10 +1360,36 @@ class UserInfo {
                 }
             } else {
                 console.log(`账号[${this.index}]购买失败: ${result.result.message}`)
+                if (this.buyNum) {
+                    await $.wait(500);
+                    await this.compound();
+                } else {
+                    console.log(`等待${(this.tryNum * this.waitTime)/1000}秒`)
+                    await $.wait(this.tryNum * this.waitTime);
+                    this.tryNum++;
+                    await this.dreamTownmainInfo();
+                    let emtry = this.getEmtry();
+                    if (emtry) {
+                        await this.buyBuild(1, level-1)
+                    } else {
+                        await $.wait(500);
+                        await this.compound();
+                    }
+                }
             }
-            
         } else {
             console.log(`账号[${this.index}]购买失败: ${result.message}`)
+            console.log(`等待${(this.tryNum * this.waitTime)/1000}秒`)
+            await $.wait(this.tryNum * this.waitTime);
+            this.tryNum++;
+            await this.dreamTownmainInfo();
+            let emtry = this.getEmtry();
+            if (emtry) {
+                await this.buyBuild(1, level-1)
+            } else {
+                await $.wait(500);
+                await this.compound();
+            }
         }
     }
 
@@ -1413,6 +1461,51 @@ class UserInfo {
             console.log(`账号[${this.index}]查询梦想小镇大富翁详情失败: ${result.message}`)
         }
     }
+    // 召唤超级矿工/增加矿工挖矿时间
+    async addWKTime(scene) {
+        let url = `https://dreamtown.58.com/web/callback/scene`
+        let body = `scene=${scene}`
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('post',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            console.log(`账号[${this.index}]召唤超级矿工/增加时间成功`)
+        } else {
+            console.log(`账号[${this.index}]召唤超级矿工/增加时间失败: ${result.message}`)
+        }
+    }
+    // 神奇矿页面查询
+    async getMineMaininfo() {
+        let url = `https://dreamtown.58.com/web/mine/maininfo?collect=false`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            this.mineMaininfo = result.result;
+        } else {
+            console.log(`账号[${this.index}]神奇矿页面查询失败: ${result.message}`)
+        }
+    }
+    // 吃鸡腿加速
+    async drumstick() {
+        let url = `https://dreamtown.58.com/web/mine/drumstick`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        console.log(JSON.stringify(result))
+        if(result.code == 0) {
+            console.log(`账号[${this.index}]吃鸡腿加速成功`)
+        } else {
+            console.log(`账号[${this.index}]吃鸡腿加速失败: ${result.message}`)
+        }
+    }
 }
 
 !(async () => {
@@ -1438,224 +1531,28 @@ class UserInfo {
             }
         }
 
-        //await $.wait(delay()); //  随机延时
-
-        console.log('\n============ 梦想小镇-合成建筑/车子 ============')
-        for(let user of userList) {
-            await user.dreamTownSwitch(1);
-            await $.wait(500);
-            await user.dreamTownmainInfo(1); 
-            // 合成建筑
-            await user.compound();
-        }
-
-        for(let user of userList) {
-            await user.dreamTownSwitch(2);
-            await $.wait(500);
-            await user.dreamTownmainInfo(2); 
-            // 合成车子
-            await user.compound();
-            console.log('谁等级高切回谁，因为收益高')
-            if (Number(user.maininfo.levelInfo.house) > Number(user.maininfo.levelInfo.car)) {
-                console.log('切回我的房子')
-                await user.dreamTownSwitch(1); 
-            }
-        }
-
-        return;
-
-        // console.log('\n============ 神奇矿-免费抽奖 ============')
-        // // 免费抽奖 开发中
-        // for(let user of userList) {
-        //     await user.rouletteInfo(); 
-        //     await $.wait(200);
-        // }
+        // await $.wait(delay()); //  随机延时
         
-        console.log('\n============ 现金签到 ============')
-        // 查询现金签到状态
-        for(let user of userList) {
-            await user.cashSigninlist(); 
-            await $.wait(200);
-        }
-
-        // 现金签到没签到的用户进行签到
-        for(let user of userList.filter(x => x.cashSign)) {
-            await user.cashSignin(); 
-            await $.wait(200);
-        }
-
-        // // 查询每日任务完成情况(评论领现金) - 开发中
-        // for(let user of userList) {
-        //     await user.dailyTaskList(); 
-        //     await $.wait(200);
-        // }
         
-        console.log('\n============ 矿山小游戏 ============')
-        for(let user of userList) {
-            // 查询神奇矿山主页
-            await user.miningUserInfo(); 
-            await $.wait(200);
-        }
-
-        console.log('\n============ 神奇矿山 ============')
-        // 偷矿
-        for(let user of userList) {
-            // 获取可偷矿列表
-            await user.getStrangerInfo(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n============ 竞拍小游戏 ============')
-        for(let user of userList) {
-            // 查询低价竞拍主页
-            await user.auctionInfo(); 
-            await $.wait(200);
-        }
-        
-        console.log('\n============ 打卡小游戏 ============')
-        // 查询神奇矿主页
-        for(let user of userList) {
-            await user.oreMainpage(false); 
-            await $.wait(200);
-        }
-        // 查询打卡状态
-        for(let user of userList) {
-            await user.attendanceDetail(); 
-            await $.wait(200);
-        }
-
-        console.log('\n============ 我的家奖励 ============')
-        // 查询我的家签到状态
-        for(let user of userList) {
-            await user.houseSignStatus(); 
-            await $.wait(200);
-        }
-        // 查询我的家兑换页
-        // for(let user of userList) {
-        //     await user.houseWithdrawPage(); 
-        //     await $.wait(200);
-        // }
-
-        // 我的家家务清单领取奖励
-        for(let user of userList) {
-            await user.houseHoldList(); 
-            await $.wait(200);
-        }
-
-        // console.log('\n============ 我的家维修或打扫 ============')
-        // // 查询我的家运行情况
-        // for(let user of userList) {
-        //     await user.houseWorkList(); 
-        //     await $.wait(200);
-        // }
-
-        // console.log('\n============ 我的家收取金币 ============')
-        //收取金币 (独立单独脚本，20分钟跑一次kbg_58collectCoin.js)
-        // for(let user of userList) {
-        //     await user.collectCoin(); 
-        //     await $.wait(200);
-        // }
-        
-        console.log('\n============ 金币任务 ============')
-        if(curHour>=TASK_TIME[0] && curHour<TASK_TIME[1]) {
-            console.log('\n查询任务...')
-            for(let id of taskList) {
-                for(let user of userList) {
-                    // 查询任务列表
-                    await user.getTaskList(id); 
-                    await $.wait(200);
-                }
-            }
-            
-            for(let user of userList) {
-                maxTaskLen = getMax(user.task.length,maxTaskLen)
-                maxRewardLen = getMax(user.reward.length,maxRewardLen)
-            }
-            
-            console.log('\n完成任务...')
-            for(let i=0; i<maxTaskLen; i++) {
-                for(let user of userList.filter(x => i<x.task.length)) {
-                    let item = user.task[i]
-                    // 做任务
-                    await user.doTask(item.sceneId,item.taskId); 
-                    await $.wait(200);
-                    // 领取任务奖励
-                    await user.getReward(item.sceneId,item.taskId); 
-                    await $.wait(200);
-                }
-                await $.wait(1000);
-            }
-            
-            console.log('\n领取奖励...')
-            for(let i=0; i<maxRewardLen; i++) {
-                for(let user of userList.filter(x => i<x.reward.length)) {
-                    let item = user.reward[i]
-                    // 领取任务奖励
-                    await user.getReward(item.sceneId,item.taskId); 
-                    await $.wait(500);
-                }
-                await $.wait(1000);
-            } 
-        } else {
-            console.log(`${TASK_TIME[0]}点到${TASK_TIME[1]}点之间会做金币任务`)
-        }
-        
-        console.log('\n============ 新手奖励 ============')
-        for(let user of userList) {
-            await user.newbieMaininfo(); 
-            await $.wait(200);
-        }
-
         console.log('\n============ 梦想小镇-大富翁 ============')
         for(let user of userList) {
-            await user.dreamTownmainInfo(); 
-            await $.wait(200);
-        }
-
-        for(let user of userList) {
-            // 半小时加一次体力
-            await user.rolldice(); 
-            await $.wait(200);
-        }
-
-
-        console.log('\n============ 梦想小镇-合成建筑/车子 ============')
-        for(let user of userList) {
+            // 我的房/车
             await user.dreamTownSwitch(1);
             await $.wait(500);
-            await user.dreamTownmainInfo(1); 
-            // 合成建筑
-            await user.compound();
-        }
-
-        for(let user of userList) {
-            await user.dreamTownSwitch(2);
-            await $.wait(500);
-            await user.dreamTownmainInfo(2); 
-            // 合成车子
-            await user.compound();
-            console.log('谁等级高切回谁，因为收益高')
-            if (Number(user.maininfo.levelInfo.house) > Number(user.maininfo.levelInfo.car)) {
-                console.log('切回我的房子')
-                await user.dreamTownSwitch(1); 
-            }
-        }
-
-        // // 加速建筑 todo-开发中
-        // for(let user of userList) {
-        //     await user.speedUp(); 
-        //     await $.wait(200);
-        // }
-
-        console.log('\n============ 查询账户 ============')
-        for(let user of userList) {
-            await user.oreMainpage(true); 
+            await user.dreamTownmainInfo(1);
+            // // 加速建筑 todo-开发中
+            // await user.speedUp(); 
             await $.wait(200);
+            // 合成房子
+            await user.compound(); 
         }
     }
 })()
 .catch((e) => $.logErr(e))
 .finally(() => $.done())
+
+
+
 
 ///////////////////////////////////////////////////////////////////
 function compare(property){

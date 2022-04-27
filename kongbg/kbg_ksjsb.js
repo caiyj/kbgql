@@ -1,3 +1,9 @@
+/*
+===========================
+[Script]
+cron "0 30 9,10,11,12,13,14,15,16,17,18 * * ?" script-path=kbg_ksjsb.js, tag=快手极速版, enabled=false
+ */
+
 const jsname = "快手极速版",
     $ = new Env("快手极速版");
 
@@ -321,9 +327,10 @@ class UserInfo {
   }
 
   async ksAdParam(creativeId) {
-    let url = "https://api.e.kuaishou.com/rest/e/v1/reward/ad?kpf=ANDROID_PHONE&kpn=NEBULA";
-
-    let body = "encData=WlTuzeTU6mGT9525bjJUVnlteAACTXpjgjAw%2BtDz1mbM14iDVHdJY0pKd7s5mx8%2BXMRRi7MCE3BSy1NNxI6bywhQueJl4YV8QDNsCONuMI7m59XX7rycrXz5ZPbObMBFLp23dqIF86Do53AbF3u4Dd2Vsk%2B1BzkhUIjucpA2gZ6g837f5Wz19RFfZ9m0pIuu8qg0EFbwOhyvbnybXJXFHahBNDH%2BfHB3V63CQuUJV6MSpBlFU6%2BDiPwORLmSR81ZkexYHIeTr2KafARSUD896R1uB%2BfUnuLqTxnxGmbUG1YIRWBELKXBD6NS9dBoJCaXUCZdA8Iy%2FXwz95700n4l98a9e0fAsnip7ehHiRCNVs7QSEMghZyZDAVZqj1S2XukcCNfZmusnYLyTk3t8pQlfH1PJqbwlA%2BnHpe%2FN8vnOSP0I1F3ZwXHWaaLL2FT%2FvHzk6Ly4osnC45ugzvyKjRmoJhi%2BQBlnOIV9GGpDBWprlbEmer2RVDv4DRCSPt%2Bfiqd3GyKML6S%2B9iWt26PpIzIORn1DyP0X4QaxZNdYWAd3lfYfTjEPXW%2BLtdcMiEYX%2FSqYWyO6zOZ4iovRzLBLXcxsd2EPoe%2B2U5Jw5tw5YBFb1%2BmsANJX9YqA1i1EE1ZlzBOQaFSudn%2Bwvwo3%2FmCfT1CORmlgfrQvWPbMrFqOlO3iSsDWBa3HqTVD82RbV%2BjRlKSPYu56jOpKvtKUHCy%2Fj3nKQZGmN2Pkdsjss0j2MKACMIwDLbOhYo%2B0pP7hY5%2FJMV0pzH65e%2BmSE2dFmbOeA%2BcR8TNtlDnWCEqDDLkMzZ7%2Bh1xWINvXEMVm453edsfnboaSXY24%2FW8RLYkYPoF%2FcMNalSuBF9X7xIw&sign=5a54eecde4d4ea6113782f7bc107d057094e54271e3c02c2eb795e0944356e7b&cs=false&sig=b5f1438be8043fa13cc0feae4408fdc7&client_key=2ac2a76d&__NS_sig3=03126241d268ea6e1d4b48491c78afa2fb133333575a5442&os=android&__NStokensig=a72ad8f8d36f5797858ea6363d8a39754c7e485a15a8d094cc334d249959edd1&token=Cg9rdWFpc2hvdS5hcGkuc3QSoAGJnMSOANoNbM6ND_OdEzBSJT4dCPjOk56DU5u5eK0bhKo1g4aIZ54x3Gd6DvRjA1Jc_CYqAnTdqHez5240vfyWqpMYv7neRWKjUx2DoZzjyFP65DNbluF2-8xcCPwAtUFH9l9xuSxRukRU7MJZS8JCZbdWZkiTtn7XwYgX9pP3OFrjlduNj2UhLZqyb1LTLoA5bbBAyelqOUJWgrv5kx0fGhLZe8NH31JEM6ppJzAS6A8iBVUiIDZhUfY1IjzcFcyxDdAHsjSY7hQCepATcGWmABMlxirPKAUwAQ",
+    // let url = "https://api.e.kuaishou.com/rest/e/v1/reward/ad?kpf=ANDROID_PHONE&kpn=NEBULA";
+    // let body = "encData=WlTuzeTU6mGT9525bjJUVnlteAACTXpjgjAw%2BtDz1mbM14iDVHdJY0pKd7s5mx8%2BXMRRi7MCE3BSy1NNxI6bywhQueJl4YV8QDNsCONuMI7m59XX7rycrXz5ZPbObMBFLp23dqIF86Do53AbF3u4Dd2Vsk%2B1BzkhUIjucpA2gZ6g837f5Wz19RFfZ9m0pIuu8qg0EFbwOhyvbnybXJXFHahBNDH%2BfHB3V63CQuUJV6MSpBlFU6%2BDiPwORLmSR81ZkexYHIeTr2KafARSUD896R1uB%2BfUnuLqTxnxGmbUG1YIRWBELKXBD6NS9dBoJCaXUCZdA8Iy%2FXwz95700n4l98a9e0fAsnip7ehHiRCNVs7QSEMghZyZDAVZqj1S2XukcCNfZmusnYLyTk3t8pQlfH1PJqbwlA%2BnHpe%2FN8vnOSP0I1F3ZwXHWaaLL2FT%2FvHzk6Ly4osnC45ugzvyKjRmoJhi%2BQBlnOIV9GGpDBWprlbEmer2RVDv4DRCSPt%2Bfiqd3GyKML6S%2B9iWt26PpIzIORn1DyP0X4QaxZNdYWAd3lfYfTjEPXW%2BLtdcMiEYX%2FSqYWyO6zOZ4iovRzLBLXcxsd2EPoe%2B2U5Jw5tw5YBFb1%2BmsANJX9YqA1i1EE1ZlzBOQaFSudn%2Bwvwo3%2FmCfT1CORmlgfrQvWPbMrFqOlO3iSsDWBa3HqTVD82RbV%2BjRlKSPYu56jOpKvtKUHCy%2Fj3nKQZGmN2Pkdsjss0j2MKACMIwDLbOhYo%2B0pP7hY5%2FJMV0pzH65e%2BmSE2dFmbOeA%2BcR8TNtlDnWCEqDDLkMzZ7%2Bh1xWINvXEMVm453edsfnboaSXY24%2FW8RLYkYPoF%2FcMNalSuBF9X7xIw&sign=5a54eecde4d4ea6113782f7bc107d057094e54271e3c02c2eb795e0944356e7b&cs=false&sig=b5f1438be8043fa13cc0feae4408fdc7&client_key=2ac2a76d&__NS_sig3=03126241d268ea6e1d4b48491c78afa2fb133333575a5442&os=android&__NStokensig=a72ad8f8d36f5797858ea6363d8a39754c7e485a15a8d094cc334d249959edd1&token=Cg9rdWFpc2hvdS5hcGkuc3QSoAGJnMSOANoNbM6ND_OdEzBSJT4dCPjOk56DU5u5eK0bhKo1g4aIZ54x3Gd6DvRjA1Jc_CYqAnTdqHez5240vfyWqpMYv7neRWKjUx2DoZzjyFP65DNbluF2-8xcCPwAtUFH9l9xuSxRukRU7MJZS8JCZbdWZkiTtn7XwYgX9pP3OFrjlduNj2UhLZqyb1LTLoA5bbBAyelqOUJWgrv5kx0fGhLZe8NH31JEM6ppJzAS6A8iBVUiIDZhUfY1IjzcFcyxDdAHsjSY7hQCepATcGWmABMlxirPKAUwAQ",
+    let url = "https://api.e.kuaishou.com/rest/r/ad/nebula/reward";
+    let body = `bizStr={"endTime":1651647435882,"eventValue":-1,"rewardList":[{"creativeId":${creativeId},"extInfo":"","llsid":2005174133101892900,"taskType":1}],"startTime":1651647362215,"taskId":77}`,
         urlObject = populateUrlObject(url, this.cookie, body);
 
     await httpRequest("post", urlObject);

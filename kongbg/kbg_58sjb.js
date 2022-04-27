@@ -17,14 +17,10 @@
 
 定时不跑小游戏就每天7点后跑5次，跑小游戏就每小时一次
 
-V2P/圈叉：
-[task_local]
-#58同城
-7 * * * * https://raw.githubusercontent.com/leafxcy/JavaScript/main/58tc.js, tag=58同城, enabled=true
-[rewrite_local]
-https://magicisland.58.com/web/sign/getIndexSignInInfo url script-request-header https://raw.githubusercontent.com/leafxcy/JavaScript/main/58tc.js
-[MITM]
-hostname = magicisland.58.com
+===========================
+20分钟运行一次
+[Script]
+cron "0 0/20 * * * ?" script-path=kbg_58sjb.js, tag=58同城我家收取金币, enabled=true
 */
 const jsname = '58同城我家收取金币'
 const $ = Env('58同城我家收取金币')
@@ -624,7 +620,7 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             if (result.result.houseworkTaskVOList.length) {
                 console.log(`账号[${this.index}]家里有情况`);
@@ -652,12 +648,12 @@ class UserInfo {
         if(!result) return
         // console.log(result)
         if(result.code == 0) {
-            console.log(`账号[${this.index}]${item.okMsg}\n`)
+            console.log(`账号[${this.index}]${item.okMsg}`)
             if (result.result?.nextTaskList?.houseworkTaskVOList.length) {
                 await $.wait(500);
                 await this.doHouseWorkTask(result.result.nextTaskList.houseworkTaskVOList[0]);
             } else {
-                console.log(`账号[${this.index}]已全部清理干净\n`);
+                console.log(`账号[${this.index}]已全部清理干净`);
             }
         } else {
             console.log(`账号[${this.index}]维修家电或打扫失败: ${result.message}`)
@@ -700,13 +696,20 @@ class UserInfo {
             const end   = new Date(`${year} ${disableEndTime}`).getTime();
             if (dateTimes > start && dateTimes<end) {
                 console.log('设置了禁止推送时间段 以下时间段不做任务');
-                return; 
+                //return; 
             }
         }
 
-        await $.wait(delay()); //  随机延时
+        //await $.wait(delay()); //  随机延时
+
+        console.log('\n============ 我的家维修或打扫 ============')
+        // 查询我的家运行情况
+        for(let user of userList) {
+            await user.houseWorkList(); 
+            await $.wait(200);
+        }
         
-        console.log('\n================== 收取金币 ==================')
+        console.log('\n============ 收取金币 ============')
         //收取金币
         for(let user of userList) {
             await user.collectCoin(); 

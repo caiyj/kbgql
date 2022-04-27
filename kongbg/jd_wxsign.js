@@ -7,7 +7,7 @@ by:小手冰凉 tg:@chianPLA
 新手写脚本，难免有bug，能用且用。
 ===========================
 [Script]
-cron "10 7 * * *" script-path=jd_wq_wxsign.js, tag=微信签到领红包
+cron "10 7 * * *" script-path=jd_wq_wxsign.js, tag=微信签到领红包, enabled=true
 */
 const $ = new Env("微信签到领红包");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
