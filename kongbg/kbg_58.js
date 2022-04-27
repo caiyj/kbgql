@@ -1015,7 +1015,6 @@ async function httpRequest(method,url) {
 }
 
 function safeGet(data) {
-    console.log('data:', data)
     try {
         if (typeof JSON.parse(data) == "object") {
             return true;
