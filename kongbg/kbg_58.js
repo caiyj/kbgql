@@ -1629,28 +1629,28 @@ class UserInfo {
             await user.rolldice(); 
             await $.wait(200);
 
-            // 我的房/车
-            await user.dreamTownSwitch(1);
-            await $.wait(500);
-            await user.dreamTownmainInfo(1);
-            // // 加速建筑 todo-开发中
-            // await user.speedUp(); 
-            await $.wait(200);
-            // 合成房子
-            await user.compound(); 
+            // // 我的房/车
+            // await user.dreamTownSwitch(1);
+            // await $.wait(500);
+            // await user.dreamTownmainInfo(1);
+            // // // 加速建筑 todo-开发中
+            // // await user.speedUp(); 
+            // await $.wait(200);
+            // // 合成房子
+            // await user.compound(); 
 
-            await user.dreamTownSwitch(2);
-            await $.wait(500);
-            await user.dreamTownmainInfo(2);
-            // // 加速建筑 todo-开发中
-            // await user.speedUp(); 
-            await $.wait(200);; 
-            // 合成车子
-            await user.compound();
-            if (Number(user.maininfo.levelInfo.house) > Number(user.maininfo.levelInfo.car)) {
-                console.log('切回我的房子')
-                await user.dreamTownSwitch(1); 
-            }
+            // await user.dreamTownSwitch(2);
+            // await $.wait(500);
+            // await user.dreamTownmainInfo(2);
+            // // // 加速建筑 todo-开发中
+            // // await user.speedUp(); 
+            // await $.wait(200);; 
+            // // 合成车子
+            // await user.compound();
+            // if (Number(user.maininfo.levelInfo.house) > Number(user.maininfo.levelInfo.car)) {
+            //     console.log('切回我的房子')
+            //     await user.dreamTownSwitch(1); 
+            // }
         }
 
         console.log('\n============ 查询账户 ============')

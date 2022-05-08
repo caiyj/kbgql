@@ -17,12 +17,17 @@
 
 定时不跑小游戏就每天7点后跑5次，跑小游戏就每小时一次
 
-===========================
-[Script]
-cron "10 7 * * *" script-path=kbg_58house.js, tag=58同城house, enabled=false
+V2P/圈叉：
+[task_local]
+#58同城
+7 * * * * https://raw.githubusercontent.com/leafxcy/JavaScript/main/58tc.js, tag=58同城, enabled=true
+[rewrite_local]
+https://magicisland.58.com/web/sign/getIndexSignInInfo url script-request-header https://raw.githubusercontent.com/leafxcy/JavaScript/main/58tc.js
+[MITM]
+hostname = magicisland.58.com
 */
-const jsname = '58同城house'
-const $ = Env('58同城house')
+const jsname = '58同城'
+const $ = Env('58同城')
 const logDebug = 0
 
 const notifyFlag = 1; //0为关闭通知，1为打开通知,默认为1
@@ -85,9 +90,8 @@ class UserInfo {
         this.showCar = false // 是否展示过车等级信息
         this.showHouse = false // 是否展示过房子等级信息
         this.mineMaininfo = null // 神奇矿页面查询
-        this.tryNum = 1
-        this.waitTime = 120000
-        this.buyNum= 0
+        this.buyNum = 0
+        this.waitTime = 30000
         
         let taskStr = this.runTask==1 ? '投入' : '不投入'
         console.log(`账号[${this.index}]现在小游戏矿石设置为：${taskStr}`)
@@ -1205,43 +1209,48 @@ class UserInfo {
             console.log(`账号[${this.index}]建筑加速失败: ${result.message}`)
         }
     }
-    // 获取空地数量
-    getEmtry () {
-        let emtry = 0;
+
+    getEmpty() {
+        let empty = 0;
         for (const key in this.maininfo.locationInfo) {
             if (this.maininfo.locationInfo[key] === null) {
-                emtry+=1;
+                empty+=1;
             }
         }
-        return emtry;
+        return empty;
     }
 
     // 梦想小镇-合成建筑
     async compound() {
-        // 获取可合成的地块
-        const info = this.compoundInfo();
+        // 将购买记录清空
         this.buyNum = 0;
-        // 没有可合成地块
-        if (!info || info.fromId === info.toId) {
-            let emtry = this.getEmtry();
-            if (emtry) {
-                console.log(`账号[${this.index}]没有可合成地块,但有${emtry}块空地，安排！`);
-                await this.buyBuild(emtry);
+        // 查询可以合成的地块
+        const info = this.compoundInfo();
+        // 不可合成
+        if (!info.flag) {
+            // 查询空地
+            const empty = this.getEmpty();
+            // 有空地
+            if (empty) {
+                console.log(`账号[${this.index}]没有可合成地块,但有${empty}块空地`);
+                await this.buyBuild(empty);
             } else {
+                // 无可合成且无空地，卖掉一个
                 console.log(`账号[${this.index}]没有可合成地块,也没有空地，卖掉等级最低的！`);
+                // 查询等级最低的地块
                 const minInfo = this.findMin();
                 if (minInfo) {
+                    // 售卖
                     await this.sellBuild(minInfo.locationIndex);
                     await $.wait(100);
                     await this.dreamTownmainInfo();
                     await $.wait(200);
+                    // 合成
                     await this.compound();
-                    return
                 }
             }
             return
         }
-        // console.log('info:', info)
         let url = `https://dreamtown.58.com/web/dreamtown/compound`
         let body = `fromId=${info.fromId}&toId=${info.toId}`
         let urlObject = populateUrlObject(url,this.cookie,body)
@@ -1256,7 +1265,6 @@ class UserInfo {
             const sceneId = 6;
             const taskId = result.result.itemId;
             if (taskId) {
-                console.log(`账号[${this.index}]获得奖励任务`);
                 await $.wait(200);
                 // 做任务
                 await this.doTask(sceneId, taskId);
@@ -1277,7 +1285,7 @@ class UserInfo {
     // 获取合成信息
     compoundInfo() {
         const locationInfo = this.maininfo.locationInfo;
-        let result = null;
+        let result = {flag: false};
         const tempInfo = {};
         for (let key in locationInfo) {
             if (locationInfo[key]) {
@@ -1290,6 +1298,7 @@ class UserInfo {
         for (let key in tempInfo) { 
             if (tempInfo[key].length >=  2) {
                 result = {
+                    flag: tempInfo[key][0].locationIndex == tempInfo[key][1].locationIndex ? false : true,
                     fromId: tempInfo[key][0].locationIndex,
                     toId: tempInfo[key][1].locationIndex,
                     level: tempInfo[key][0].level,
@@ -1327,14 +1336,17 @@ class UserInfo {
             console.log(`账号[${this.index}]购买失败：购买建筑等级未知`)
             return;
         }
-        if (Number(this.maininfo.userInfo.coin) < (Number(this.maininfo.fastBuyInfo.price) * 1.2)) {
+        const coins =  Number(this.maininfo.userInfo.coin)
+        const price = Number(this.maininfo.fastBuyInfo.price)*1.1
+        console.log('coins:', coins)
+        console.log('price:', price)
+        if (coins < price) {
             // console.log(`账号[${this.index}]钱不够，购买下一等级`)
             await this.dreamTownmainInfo();
             await $.wait(200);
+            this.waitTime = parseInt((price - coins) / this.maininfo.userInfo.coinSpeed) * 1000;
             level = this.maininfo.fastBuyInfo.level;
         }
-
-        // console.log('level:', level)
 
         let url = `https://dreamtown.58.com/web/dreamtown/buy`
         let body = `type=quick&level=${level}`
@@ -1346,7 +1358,6 @@ class UserInfo {
         if(result.code == 0) {
             if (result.result.state === 0) {
                 this.buyNum++;
-                this.tryNum = 1;
                 await $.wait(100);
                 await this.dreamTownmainInfo();
                 num--;
@@ -1361,35 +1372,19 @@ class UserInfo {
             } else {
                 console.log(`账号[${this.index}]购买失败: ${result.result.message}`)
                 if (this.buyNum) {
+                    console.log(`账号[${this.index}]之前购买了${this.buyNum}个，先合成`)
                     await $.wait(500);
                     await this.compound();
                 } else {
-                    console.log(`等待${(this.tryNum * this.waitTime)/1000}秒`)
-                    await $.wait(this.tryNum * this.waitTime);
-                    this.tryNum++;
-                    await this.dreamTownmainInfo();
-                    let emtry = this.getEmtry();
-                    if (emtry) {
-                        await this.buyBuild(1, level-1)
-                    } else {
-                        await $.wait(500);
-                        await this.compound();
-                    }
+                    console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
+                    await $.wait(this.waitTime);
+                    await this.buyBuild(1, level)
                 }
             }
         } else {
-            console.log(`账号[${this.index}]购买失败: ${result.message}`)
-            console.log(`等待${(this.tryNum * this.waitTime)/1000}秒`)
-            await $.wait(this.tryNum * this.waitTime);
-            this.tryNum++;
-            await this.dreamTownmainInfo();
-            let emtry = this.getEmtry();
-            if (emtry) {
-                await this.buyBuild(1, level-1)
-            } else {
-                await $.wait(500);
-                await this.compound();
-            }
+            console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
+            await $.wait(this.waitTime);
+            await this.buyBuild(1, level)
         }
     }
 
@@ -1527,7 +1522,7 @@ class UserInfo {
             const end   = new Date(`${year} ${disableEndTime}`).getTime();
             if (dateTimes > start && dateTimes<end) {
                 console.log('设置了禁止推送时间段 以下时间段不做任务');
-                return; 
+                //return; 
             }
         }
 
@@ -1537,7 +1532,7 @@ class UserInfo {
         console.log('\n============ 梦想小镇-大富翁 ============')
         for(let user of userList) {
             // 我的房/车
-            await user.dreamTownSwitch(1);
+            // await user.dreamTownSwitch(1);
             await $.wait(500);
             await user.dreamTownmainInfo(1);
             // // 加速建筑 todo-开发中
