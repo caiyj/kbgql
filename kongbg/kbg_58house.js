@@ -1341,11 +1341,18 @@ class UserInfo {
         console.log('coins:', coins)
         console.log('price:', price)
         if (coins < price) {
-            // console.log(`账号[${this.index}]钱不够，购买下一等级`)
+            this.waitTime = parseInt((price - coins) / this.maininfo.userInfo.coinSpeed) * 1000;
+            console.log(`账号[${this.index}]钱不够, 等待 ${(this.waitTime)/1000}s`)
+            await $.wait(this.waitTime);
             await this.dreamTownmainInfo();
             await $.wait(200);
-            this.waitTime = parseInt((price - coins) / this.maininfo.userInfo.coinSpeed) * 1000;
-            level = this.maininfo.fastBuyInfo.level;
+            // 查询空地
+            const empty = this.getEmpty();
+            if (empty) {
+                await this.buyBuild(1, level)
+            } else {
+                await this.compound();
+            }
         }
 
         let url = `https://dreamtown.58.com/web/dreamtown/buy`
