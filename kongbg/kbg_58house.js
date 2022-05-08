@@ -1378,13 +1378,30 @@ class UserInfo {
                 } else {
                     console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
                     await $.wait(this.waitTime);
-                    await this.buyBuild(1, level)
+                    await this.dreamTownmainInfo();
+                    await $.wait(200);
+                    // 查询空地
+                    const empty = this.getEmpty();
+                    if (empty) {
+                        await this.buyBuild(1, level)
+                    } else {
+                        await this.compound();
+                    }
+                    
                 }
             }
         } else {
             console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
             await $.wait(this.waitTime);
-            await this.buyBuild(1, level)
+            await this.dreamTownmainInfo();
+            await $.wait(200);
+            // 查询空地
+            const empty = this.getEmpty();
+            if (empty) {
+                await this.buyBuild(1, level)
+            } else {
+                await this.compound();
+            }
         }
     }
 
