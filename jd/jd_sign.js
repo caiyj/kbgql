@@ -1,15 +1,13 @@
 /*
-微信签到领红包
-by:小手冰凉 tg:@chianPLA
-交流群：https://t.me/jdPLA2
-脚本更新时间：2022-01-01
+京东app签到合集
+脚本更新时间：2022-05-09
 脚本兼容: Node.js
-新手写脚本，难免有bug，能用且用。
 ===========================
 [Script]
-cron "10 7 * * *" script-path=jd_wq_wxsign.js, tag=微信签到领红包
+cron "10 8 * * *" script-path=jd_sign.js, tag=京东app签到合集
 */
-const $ = new Env("微信签到领红包");
+const jsname = "京东app签到合集";
+const $ = new Env("京东app签到合集");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 const request = require('request');
@@ -60,25 +58,25 @@ if ($.isNode()) {
 })().catch((e) => { $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '') }).finally(() => { $.done(); })
 
 async function main() {
-    await signTask(); // 微信签到领红包
+    await signTask(); // 签到
 }
 
 async function showMsg() {
     tools.sendNotify($.name)
 }
 
-// 微信签到领红包
+// 签到
 function signTask() {
     return new Promise(async resolve => {
         const options = {
-            url: `https://api.m.jd.com/signTask/doSignTask?functionId=SignComponent_doSignTask&appid=hot_channel&loginWQBiz=signcomponent&loginType=2&body={"activityId":"10002"}&g_ty=ls&g_tk=1294369933`,
+            url: `https://api.m.jd.com/client.action?functionId=signBeanAct`,
             headers: {
                 "Host": "api.m.jd.com",
                 "charset": "utf-8",
                 "Connection": "keep-alive",
                 'content-type': 'application/json',
                 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15F79 MicroMessenger/8.0.15(0x18000f2e) NetType/WIFI Language/zh_CN',
-                'referer': 'https://servicewechat.com/wx91d27dbf599dff74/581/page-frame.html',
+                'referer': '',
                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10; HarmonyOS; WLZ-AN00; HMSCore 6.1.0.314) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.105 HuaweiBrowser/11.1.5.320 Mobile Safari/537.36',
                 "cookie": "wxapp_type=15;wxapp_version=7.10.140;wxapp_scene=1001;pinStatus=0;" + cookie,
                 "Accept-Encoding": "gzip,compress,br,deflate",
@@ -91,16 +89,17 @@ function signTask() {
                     console.log(`signTask api请求失败，请检查网路重试`)
                 } else {
                     if (data) {
+                        console.log('data:', data)
                         data = JSON.parse(data);
                         if (data.subCode == 0) {
-                            console.log(`签到: ${data?.data?.signDays}天, 获得红包: ${data?.data?.rewardValue}元`);
-                            tools.collectMsg(`【京东账号${$.index}】${$.nickName || $.UserName}\n
-                                        签到: ${data?.data?.signDays}天, 获得红包: ${data?.data?.rewardValue}元\n\n
-                                        `)
+                            console.log(`签到: `);
+                            // tools.collectMsg(`【京东账号${$.index}】${$.nickName || $.UserName}\n
+                            //             签到: 元\n
+                            //             `)
                         } else {
                             console.log(data.message);
-                            tools.collectMsg(`【京东账号${$.index}】${$.nickName || $.UserName}\n
-                            ${data.message}\n\n`)
+                            // tools.collectMsg(`【京东账号${$.index}】${$.nickName || $.UserName}\n
+                            // ${data.message}\n\n`)
                         }
                     }
                 }
