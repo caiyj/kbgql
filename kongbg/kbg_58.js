@@ -91,7 +91,7 @@ class UserInfo {
         this.mineMaininfo = null // 神奇矿页面查询
         this.buyNum = 0
         this.waitTime = 30000
-        
+        this.followNum = 0;
         let taskStr = this.runTask==1 ? '投入' : '不投入'
         console.log(`账号[${this.index}]现在小游戏矿石设置为：${taskStr}`)
     }
@@ -825,7 +825,17 @@ class UserInfo {
                 }
             } else if (taskDescription.includes('关注3个服务号')) {
                 console.log('关注3个服务号 待开发')
+                // //  获取服务号
+                // const followList = await this.getFollowList();
+                // if (followList.length >= 3) {
+                //     // 取消前3个
+                //     for(let j = 0; j < 3; j++) {
+                //         await this.follow(followList[j].serviceId, 0);
+                //     }
+                // }
+                // // 关注前3个
                 // const res = await this.getRecommendAtion();
+                // console.log('关注前3个:', res)
                 // if (res) {
                 //     await $.wait(200);
                 //     // 做完任务，继续偷矿
@@ -844,33 +854,36 @@ class UserInfo {
         await httpRequest('get',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(result)
+        // console.log(result)
         if(result.code == 580200) {
-            const canFollow = result.data.filter(item=>{
-                return item.follow === '0';
-            })
-            const followed = result.data.filter(item=>{
-                return item.follow === '1';
-            })
-            console.log('canFollow:', canFollow)
-            console.log('followed:', followed)
-            if (canFollow.length < 3) {
-                for (let i = 0; i < 3; i++) {
-                    await $.wait(200)
-                    await this.follow(followed[i].serviceId, 0)
-                }
-                await $.wait(200)
+            if (this.followNum < 3) {
+                await $.wait(200);
+                await this.follow(result.data[this.followNum].serviceId, 1);
+                this.followNum++;
+                await $.wait(200);
                 await this.getRecommendAtion();
             } else {
-                for (let i = 0; i < 3; i++) {
-                    await $.wait(200)
-                    await this.follow(canFollow[i].serviceId, 1)
-                }
+                this.followNum = 0;
                 return true;
             }
         } else {
             console.log(`账号[${this.index}]获取可关注列表失败: ${result.message}`)
             return false;
+        }
+    }
+    // 获取服务号
+    async getFollowList() {
+        let url = `https://messcenter.58.com/app/service/aggregation/recommendation?pageNum=1&queryFollowType=1`
+        let body = ``
+        let urlObject = populateUrlObject(url,this.cookie,body)
+        await httpRequest('get',urlObject)
+        let result = httpResult;
+        if(!result) return
+        // console.log(result)
+        if(result.code == 580200) {
+            return result.data || [];
+        } else {
+            return [];
         }
     }
     // 关注
@@ -884,8 +897,10 @@ class UserInfo {
         console.log(JSON.stringify(result))
         if(result.code == 580200) {
             console.log(`账号[${this.index}]${type === 0 ? '取消': ''}关注成功`)
+            return true;
         } else {
             console.log(`账号[${this.index}]获取可关注列表失败: ${result.message}`)
+            return false;
         }
     }
 
@@ -1556,9 +1571,21 @@ class UserInfo {
             const end   = new Date(`${year} ${disableEndTime}`).getTime();
             if (dateTimes > start && dateTimes<end) {
                 console.log('设置了禁止推送时间段 以下时间段不做任务');
-                return; 
+                //return; 
             }
         }
+
+        console.log('\n============ 神奇矿山 ============')
+        for(let user of userList) {
+            // 查询神奇矿山主页
+            await user.miningUserInfo(); 
+            await $.wait(500);
+            // 获取可偷矿列表，能偷就偷
+            await user.getStrangerInfo();
+            await $.wait(200);
+        }
+
+        return
         
 
         // await $.wait(delay()); //  随机延时
