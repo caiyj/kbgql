@@ -816,11 +816,13 @@ class _0x9d8dda {
  
   async ["helpInvite"](T) {
     let p = T["split"]('&'),
-        C = p[0],
-        S = p[1],
+        C = '',// p[0],
+        S = 'Y3JuVoTm9',// p[1],
         a = "https://nebula.kuaishou.com/rest/n/nebula/qrcode?version=1.2.0",
         Y = '',
         j = _0x495d61(a, this["cookie"], Y);
+
+        console.log('helpInvite', p)
  
     j['headers']["Referer"] = "https://nebula.kuaishou.com/fission/face-qrcode?fid=" + C + '&shareToken=' + S + "&source=qrcode";
     await _0x39a23b("get", j);
@@ -850,6 +852,7 @@ class _0x9d8dda {
         'Accept-Language': "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
       }
     };
+    console.log('helpPackage:', C)
     await _0x39a23b("post", C);
     let S = _0x1a0963;
  
@@ -866,6 +869,7 @@ class _0x9d8dda {
     if (C == this["userId"]) {
       return;
     }
+    console.log('helpScan:', p)
  
     let a = "https://api.kuaishouzt.com/rest/zt/share/show/any",
         Y = "theme=light&sdkVersion=1.14.0.4&kpf=ANDROID_PHONE&shareMessage=https%3A%2F%2Fnicdd.get666bjrqu985xvp14v.com%2Ff%2F" + S + "%3FlayoutType%3D4&kpn=NEBULA&launchState=hotLaunch&sessionId=ac165e40-48bd-42de-9fc5-b250d7eb983c&extTransientParams=%7B%22source%22%3A%22userScanCamera%22%7D",
