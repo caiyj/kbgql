@@ -1387,6 +1387,9 @@ class UserInfo {
                     await $.wait(500);
                     await this.compound();
                 } else {
+                    if ((this.waitTime)/1000 > 300) {
+                        return;
+                    }
                     console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
                     await $.wait(this.waitTime);
                     await this.dreamTownmainInfo();
@@ -1402,6 +1405,9 @@ class UserInfo {
                 }
             }
         } else {
+            if ((this.waitTime)/1000 > 300) {
+                return;
+            }
             console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
             await $.wait(this.waitTime);
             await this.dreamTownmainInfo();
