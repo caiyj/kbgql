@@ -1341,6 +1341,9 @@ class UserInfo {
         console.log('price:', price)
         if (coins < price) {
             this.waitTime = parseInt((price - coins) / this.maininfo.userInfo.coinSpeed) * 1000;
+            if ((this.waitTime)/1000 > 300) {
+                return;
+            } 
             console.log(`账号[${this.index}]钱不够, 等待 ${(this.waitTime)/1000}s`)
             await $.wait(this.waitTime);
             await this.dreamTownmainInfo();
