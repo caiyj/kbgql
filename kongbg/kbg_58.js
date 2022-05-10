@@ -89,6 +89,8 @@ class UserInfo {
         this.showCar = false // 是否展示过车等级信息
         this.showHouse = false // 是否展示过房子等级信息
         this.mineMaininfo = null // 神奇矿页面查询
+        this.buyNum = 0
+        this.waitTime = 30000
         
         let taskStr = this.runTask==1 ? '投入' : '不投入'
         console.log(`账号[${this.index}]现在小游戏矿石设置为：${taskStr}`)
@@ -1207,40 +1209,54 @@ class UserInfo {
         }
     }
 
+    getEmpty() {
+        let empty = 0;
+        for (const key in this.maininfo.locationInfo) {
+            if (this.maininfo.locationInfo[key] === null) {
+                empty+=1;
+            }
+        }
+        return empty;
+    }
+
     // 梦想小镇-合成建筑
     async compound() {
+        // 将购买记录清空
+        this.buyNum = 0;
+        // 查询可以合成的地块
         const info = this.compoundInfo();
-        if (!info || info.fromId === info.toId) {
-            let emtry = 0;
-            for (const key in this.maininfo.locationInfo) {
-                if (this.maininfo.locationInfo[key] === null) {
-                    emtry+=1;
-                }
-            }
-            if (emtry) {
-                console.log(`账号[${this.index}]没有可合成地块,但有${emtry}块空地，安排！`);
-                await this.buyBuild(emtry);
+        // 不可合成
+        if (!info.flag) {
+            // 查询空地
+            const empty = this.getEmpty();
+            // 有空地
+            if (empty) {
+                console.log(`账号[${this.index}]没有可合成地块,但有${empty}块空地`);
+                await this.buyBuild(empty);
             } else {
-                console.log(`账号[${this.index}]没有可合成地块,也没有空地，删除等级最低的！`);
+                // 无可合成且无空地，卖掉一个
+                console.log(`账号[${this.index}]没有可合成地块,也没有空地，卖掉等级最低的！`);
+                // 查询等级最低的地块
                 const minInfo = this.findMin();
                 if (minInfo) {
+                    // 售卖
                     await this.sellBuild(minInfo.locationIndex);
                     await $.wait(100);
                     await this.dreamTownmainInfo();
                     await $.wait(200);
+                    // 合成
                     await this.compound();
                 }
             }
             return
         }
-        console.log('info:', info)
         let url = `https://dreamtown.58.com/web/dreamtown/compound`
         let body = `fromId=${info.fromId}&toId=${info.toId}`
         let urlObject = populateUrlObject(url,this.cookie,body)
         await httpRequest('post',urlObject)
         let result = httpResult;
         if(!result) return
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
         if(result.code == 0) {
             console.log(`账号[${this.index}]地块${info.fromId}合向地块${info.toId}， 地块${info.toId}升级到${info.level+1}级`);
 
@@ -1268,7 +1284,7 @@ class UserInfo {
     // 获取合成信息
     compoundInfo() {
         const locationInfo = this.maininfo.locationInfo;
-        let result = null;
+        let result = {flag: false};
         const tempInfo = {};
         for (let key in locationInfo) {
             if (locationInfo[key]) {
@@ -1281,6 +1297,7 @@ class UserInfo {
         for (let key in tempInfo) { 
             if (tempInfo[key].length >=  2) {
                 result = {
+                    flag: tempInfo[key][0].locationIndex == tempInfo[key][1].locationIndex ? false : true,
                     fromId: tempInfo[key][0].locationIndex,
                     toId: tempInfo[key][1].locationIndex,
                     level: tempInfo[key][0].level,
@@ -1318,14 +1335,25 @@ class UserInfo {
             console.log(`账号[${this.index}]购买失败：购买建筑等级未知`)
             return;
         }
-        if (Number(this.maininfo.userInfo.coin) < Number(this.maininfo.fastBuyInfo.price)) {
-            // console.log(`账号[${this.index}]钱不够，购买下一等级`)
+        const coins =  Number(this.maininfo.userInfo.coin)
+        const price = Number(this.maininfo.fastBuyInfo.price)*1.1
+        console.log('coins:', coins)
+        console.log('price:', price)
+        if (coins < price) {
+            this.waitTime = parseInt((price - coins) / this.maininfo.userInfo.coinSpeed) * 1000;
+            console.log(`账号[${this.index}]钱不够, 等待 ${(this.waitTime)/1000}s`)
+            await $.wait(this.waitTime);
             await this.dreamTownmainInfo();
-            await $.wait(200);
             level = this.maininfo.fastBuyInfo.level;
+            await $.wait(200);
+            // 查询空地
+            const empty = this.getEmpty();
+            if (empty) {
+                await this.buyBuild(1, level)
+            } else {
+                await this.compound();
+            }
         }
-
-        console.log('level:', level)
 
         let url = `https://dreamtown.58.com/web/dreamtown/buy`
         let body = `type=quick&level=${level}`
@@ -1336,6 +1364,8 @@ class UserInfo {
         // console.log('购买结果：',JSON.stringify(result))
         if(result.code == 0) {
             if (result.result.state === 0) {
+                console.log('购买成功1个')
+                this.buyNum++;
                 await $.wait(100);
                 await this.dreamTownmainInfo();
                 num-=1;
@@ -1349,10 +1379,37 @@ class UserInfo {
                 }
             } else {
                 console.log(`账号[${this.index}]购买失败: ${result.result.message}`)
+                if (this.buyNum) {
+                    console.log(`账号[${this.index}]之前购买了${this.buyNum}个，先合成`)
+                    await $.wait(500);
+                    await this.compound();
+                } else {
+                    console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
+                    await $.wait(this.waitTime);
+                    await this.dreamTownmainInfo();
+                    await $.wait(200);
+                    // 查询空地
+                    const empty = this.getEmpty();
+                    if (empty) {
+                        await this.buyBuild(1, level)
+                    } else {
+                        await this.compound();
+                    }
+                    
+                }
             }
-            
         } else {
-            console.log(`账号[${this.index}]购买失败: ${result.message}`)
+            console.log(`账号[${this.index}]等待 ${(this.waitTime)/1000}s`)
+            await $.wait(this.waitTime);
+            await this.dreamTownmainInfo();
+            await $.wait(200);
+            // 查询空地
+            const empty = this.getEmpty();
+            if (empty) {
+                await this.buyBuild(1, level)
+            } else {
+                await this.compound();
+            }
         }
     }
 
@@ -1493,8 +1550,9 @@ class UserInfo {
                 return; 
             }
         }
+        
 
-        await $.wait(delay()); //  随机延时
+        // await $.wait(delay()); //  随机延时
         
         console.log('\n============ 现金签到 ============')
         // 现金签到

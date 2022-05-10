@@ -852,7 +852,7 @@ class _0x9d8dda {
         'Accept-Language': "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
       }
     };
-    console.log('helpPackage:', C)
+    // console.log('helpPackage:', C)
     await _0x39a23b("post", C);
     let S = _0x1a0963;
  
