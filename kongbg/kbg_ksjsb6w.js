@@ -616,7 +616,7 @@ class _0x9d8dda {
     };
     await _0x39a23b("get", p);
  
-    let C = _0x1a0963[Math["floor"](Math["random"]() * _0x1a0963["length"] - 1)];
+    let C = _0x1a0963[Math["floor"](Math["random"]() * (_0x1a0963 ? _0x1a0963["length"] - 1 : 1))];
  
     if (!C) {
       return;

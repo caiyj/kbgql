@@ -1345,6 +1345,7 @@ class UserInfo {
             console.log(`账号[${this.index}]钱不够, 等待 ${(this.waitTime)/1000}s`)
             await $.wait(this.waitTime);
             await this.dreamTownmainInfo();
+            level = this.maininfo.fastBuyInfo.level;
             await $.wait(200);
             // 查询空地
             const empty = this.getEmpty();
@@ -1364,10 +1365,11 @@ class UserInfo {
         // console.log('购买结果：',JSON.stringify(result))
         if(result.code == 0) {
             if (result.result.state === 0) {
+                console.log('购买成功1个')
                 this.buyNum++;
                 await $.wait(100);
                 await this.dreamTownmainInfo();
-                num--;
+                num-=1;
                 if (num) {
                     await $.wait(200);
                     await this.buyBuild(num);
@@ -1546,9 +1548,10 @@ class UserInfo {
             const end   = new Date(`${year} ${disableEndTime}`).getTime();
             if (dateTimes > start && dateTimes<end) {
                 console.log('设置了禁止推送时间段 以下时间段不做任务');
-                //return; 
+                return; 
             }
         }
+        return; 
 
         // await $.wait(delay()); //  随机延时
         
